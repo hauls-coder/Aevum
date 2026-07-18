@@ -14,7 +14,7 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:5037/api/tasks/2
+DELETE http://localhost:5037/api/tasks/0
 
 ###
 PUT http://localhost:5037/api/tasks/1
@@ -22,5 +22,59 @@ Content-Type: application/json
 
 {
   "title": "Изучить ASP.NET Core полностью",
+  "isCompleted": true
+}
+
+###
+POST http://localhost:5037/api/tasks
+Content-Type: application/json
+
+{
+  "title": "Подключить PostgreSQL к Aevum",
+  "isCompleted": false
+}
+
+###
+PUT http://localhost:5037/api/tasks/2
+Content-Type: application/json
+
+{
+  "title": "Сделать первую версию Aevum",
+  "isCompleted": false
+}
+
+###
+POST http://localhost:5037/api/tasks
+Content-Type: application/json
+
+{
+  "title": "Тестовая задача",
+  "isCompleted": false
+}
+
+###
+POST http://localhost:5037/api/tasks
+Content-Type: application/json
+
+{
+  "title": "Проверить работу PostgreSQL",
+  "isCompleted": false
+}
+
+###
+POST http://localhost:5037/api/tasks/1
+Content-Type: application/json
+
+{
+  "title": "Проверить сохранение в PostgreSQL",
+  "isCompleted": false
+}
+
+###
+PUT http://localhost:5037/api/tasks
+Content-Type: application/json
+
+{
+  "title": "PostgreSQL подключён",
   "isCompleted": true
 }

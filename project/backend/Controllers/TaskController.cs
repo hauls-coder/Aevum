@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
+using backend.Services;
 
 namespace backend.Controllers;
 
@@ -7,57 +8,38 @@ namespace backend.Controllers;
 [Route("api/tasks")]
 public class TasksController : ControllerBase
 {
-    private static List<TaskItem> tasks = new List<TaskItem>
+    private readonly TaskService taskService;
+
+    public TasksController(TaskService taskService)
     {
-        new TaskItem
-        {
-            Id = 1,
-            Title = "Изучить ASP.NET Core",
-            IsCompleted = false
-        },
-        new TaskItem
-        {
-            Id = 2,
-            Title = "Сделать первую версию Life OS",
-            IsCompleted = false
-        }
-    };
+        this.taskService = taskService;
+    }
+
     [HttpGet]
     public List<TaskItem> Get()
     {
-        return tasks;
-
+        return taskService.Get();
     }
 
     [HttpPost]
     public string Create(TaskItem task)
     {
-        tasks.Add(task);
+        taskService.Create(task);
+
         return $"Задача '{task.Title}' успешно создана!";
     }
 
     [HttpDelete("{id}")]
     public string Delete(int id)
     {
-        var task = tasks.Find(x => x.Id == id);
-        if (task == null)
-        {
-            return "Задача не найдена!";
-        }
-        tasks.Remove(task);
-        return "Задача успешно удалена!";
+        return taskService.Delete(id);
     }
 
     [HttpPut("{id}")]
     public string Update(int id, TaskItem updatedTask)
     {
-        var task = tasks.Find(x => x.Id == id);
-        if (task == null)
-        {
-            return "Задача не найдена!";
-        }
-        task.Title = updatedTask.Title;
-        task.IsCompleted = updatedTask.IsCompleted;
-        return "Задача успешно обновлена!";
+        return taskService.Update(id, updatedTask);
     }
 }
+
+    
