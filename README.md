@@ -1,4 +1,4 @@
-# Life OS
+# Aevum
 
 Personal Life Operating System.
 
