@@ -1,0 +1,136 @@
+.app {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 28px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  text-align: left;
+  background: #0d0d0f;
+}
+
+.app-header {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  margin-bottom: 56px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #c99a45;
+  font-family: Georgia, serif;
+  font-size: 18px;
+  letter-spacing: 6px;
+}
+
+.brand-logo {
+  font-size: 25px;
+  letter-spacing: 0;
+}
+
+.icon-button {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #c99a45;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.welcome h1 {
+  margin: 0;
+  color: #f3eee5;
+  font-size: 34px;
+  line-height: 1.15;
+  font-weight: 500;
+  letter-spacing: -1px;
+}
+
+.welcome p {
+  margin: 12px 0 0;
+  color: #a79e92;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+@media (min-width: 600px) {
+  .app {
+    border-left: 1px solid #242426;
+    border-right: 1px solid #242426;
+  }
+}
+.focus-card {
+  margin-top: 34px;
+  padding: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border: 1px solid #29292c;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #171719, #111113);
+}
+
+.section-label {
+  display: block;
+  margin-bottom: 16px;
+  color: #c99a45;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.focus-card h2 {
+  max-width: 220px;
+  margin: 0;
+  color: #f3eee5;
+  font-size: 21px;
+  line-height: 1.35;
+  font-weight: 500;
+}
+
+.focus-card p {
+  margin: 12px 0 0;
+  color: #a79e92;
+  font-size: 14px;
+}
+
+.progress-ring {
+  width: 92px;
+  height: 92px;
+  flex-shrink: 0;
+  padding: 7px;
+  border-radius: 50%;
+}
+
+.progress-ring-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #141416;
+}
+
+.progress-ring strong {
+  color: #f3eee5;
+  font-size: 21px;
+  font-weight: 500;
+}
+
+.progress-ring span {
+  margin-top: 2px;
+  color: #8e877e;
+  font-size: 11px;
+}

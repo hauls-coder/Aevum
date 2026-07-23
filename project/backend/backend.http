@@ -62,7 +62,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:5037/api/tasks/1
+POST http://localhost:5037/api/tasks
 Content-Type: application/json
 
 {
@@ -71,10 +71,13 @@ Content-Type: application/json
 }
 
 ###
-PUT http://localhost:5037/api/tasks
+PUT http://localhost:5037/api/tasks/1
 Content-Type: application/json
 
 {
   "title": "PostgreSQL подключён",
   "isCompleted": true
 }
+
+###
+DELETE http://localhost:5037/api/tasks/1
