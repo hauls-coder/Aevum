@@ -144,3 +144,38 @@
     flex-wrap: wrap;
   }
 }
+.tasks-heading {
+  margin-bottom: 32px;
+  padding-bottom: 22px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid #29272a;
+}
+
+.brand-label {
+  color: #c99a45;
+  font-family: Georgia, serif;
+  font-size: 12px;
+  letter-spacing: 5px;
+}
+
+.tasks-heading p {
+  margin: 0 0 6px;
+  color: #a79e92;
+  font-size: 14px;
+  text-align: right;
+}
+
+@media (max-width: 480px) {
+  .tasks-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+.tasks-heading p {
+  text-align: left;
+}

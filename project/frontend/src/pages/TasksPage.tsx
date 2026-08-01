@@ -50,87 +50,98 @@ function TasksPage() {
     }
   }
   async function handleToggle(task: Task) {
-  const updatedTask = {
-    ...task,
-    isCompleted: !task.isCompleted,
+    const updatedTask = {
+      ...task,
+      isCompleted: !task.isCompleted,
+    }
+
+    try {
+      setError('')
+      await updateTask(updatedTask)
+
+      setTasks((currentTasks) =>
+        currentTasks.map((currentTask) =>
+          currentTask.id === task.id ? updatedTask : currentTask,
+        ),
+      )
+    } catch {
+      setError('Не удалось изменить задачу')
+    }
   }
 
-  try {
-    setError('')
-    await updateTask(updatedTask)
+  async function handleDelete(id: number) {
+    try {
+      setError('')
+      await deleteTask(id)
 
-    setTasks((currentTasks) =>
-      currentTasks.map((currentTask) =>
-        currentTask.id === task.id ? updatedTask : currentTask,
-      ),
-    )
-  } catch {
-    setError('Не удалось изменить задачу')
+      setTasks((currentTasks) =>
+        currentTasks.filter((task) => task.id !== id),
+      )
+    } catch {
+      setError('Не удалось удалить задачу')
+    }
   }
-}
+  async function handleEdit(task: Task) {
+    const newTitle = window.prompt(
+      'Новое название задачи',
+      task.title,
+    )?.trim()
 
-async function handleDelete(id: number) {
-  try {
-    setError('')
-    await deleteTask(id)
+    if (!newTitle || newTitle === task.title) {
+      return
+    }
 
-    setTasks((currentTasks) =>
-      currentTasks.filter((task) => task.id !== id),
-    )
-  } catch {
-    setError('Не удалось удалить задачу')
+    const updatedTask = {
+      ...task,
+      title: newTitle,
+    }
+
+    try {
+      setError('')
+      await updateTask(updatedTask)
+
+      setTasks((currentTasks) =>
+        currentTasks.map((currentTask) =>
+          currentTask.id === task.id ? updatedTask : currentTask,
+        ),
+      )
+    } catch {
+      setError('Не удалось изменить название задачи')
+    }
   }
-}
-async function handleEdit(task: Task) {
-  const newTitle = window.prompt(
-    'Новое название задачи',
-    task.title,
-  )?.trim()
-
-  if (!newTitle || newTitle === task.title) {
-    return
-  }
-
-  const updatedTask = {
-    ...task,
-    title: newTitle,
-  }
-
-  try {
-    setError('')
-    await updateTask(updatedTask)
-
-    setTasks((currentTasks) =>
-      currentTasks.map((currentTask) =>
-        currentTask.id === task.id ? updatedTask : currentTask,
-      ),
-    )
-  } catch {
-    setError('Не удалось изменить название задачи')
-  }
-}
+  const completedCount = tasks.filter(
+    (task) => task.isCompleted,
+  ).length
   if (isLoading) {
     return <p>Загрузка задач...</p>
   }
 
   return (
     <main className="app">
-      <h1>Задачи</h1>
+      <header className="tasks-heading">
+        <div>
+          <span className="brand-label">AEVUM</span>
+          <h1>Задачи</h1>
+        </div>
+        <p>
+          {completedCount} из {tasks.length} выполнено
+        </p>
+      </header>
 
       <TaskForm
-      title={title}
-      isCreating={isCreating}
-      onTitleChange={setTitle}
-      onSubmit={handleSubmit}
+        title={title}
+        isCreating={isCreating}
+        onTitleChange={setTitle}
+        onSubmit={handleSubmit}
       />
 
       {error && <p>{error}</p>}
 
       <TaskList
-      tasks={tasks}
-      onToggle={handleToggle}
-      onEdit={handleEdit}
-      onDelete={handleDelete}
+        tasks={tasks}
+        onToggle={handleToggle}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
       />
     </main>
   )
