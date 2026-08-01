@@ -65,6 +65,14 @@ app.UseAuthorization();
 
 app.MapGroup("/api/auth")
    .MapIdentityApi<AppUser>();
+app.MapPost(
+    "/api/auth/logout",
+    async (SignInManager<AppUser> SignInManager) =>
+    {
+        await SignInManager.SignOutAsync();
+        return Results.Ok();
+    })
+    .RequireAuthorization();
 app.MapControllers();
 app.Run();
 

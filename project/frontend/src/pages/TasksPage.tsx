@@ -10,8 +10,11 @@ import {
 import type { Task } from '../types/task'
 import '../App.css'
 
+interface TasksPageProps {
+  onLogout: () => void
+}
 
-function TasksPage() {
+function TasksPage({ onLogout }: TasksPageProps) {
   const [tasks, setTasks] = useState<Task[]>([])
   const [title, setTitle] = useState('')
   const [isLoading, setIsLoading] = useState(true)
@@ -110,6 +113,9 @@ function TasksPage() {
 
   return (
     <main className="app">
+      <button type="button" onClick={onLogout}>
+        Выйти
+      </button>
       <header className="tasks-heading">
         <div>
           <span className="brand-label">AEVUM</span>
