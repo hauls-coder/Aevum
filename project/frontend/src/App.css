@@ -195,3 +195,31 @@
   background: #211616;
   color: #e1aaa3;
 }
+
+.app .task-edit-form {
+  width: 100%;
+  margin: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+}
+
+.app .task-edit-form button {
+  min-height: 46px;
+  padding: 0 14px;
+}
+
+.app .task-edit-form .task-edit-cancel {
+  border-color: #3b342a;
+  background: #1b1917;
+  color: #d8c7a5;
+}
+
+@media (max-width: 480px) {
+  .app .task-edit-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .app .task-edit-form input {
+    grid-column: 1 / -1;
+  }
+}

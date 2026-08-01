@@ -1,3 +1,4 @@
+import { useState, type FormEvent } from 'react'
 import type { Task } from '../../types/task'
 
 interface TaskItemProps {
@@ -13,6 +14,59 @@ function TaskItem({
   onEdit,
   onDelete,
 }: TaskItemProps) {
+  const [isEditing, setIsEditing] = useState(false)
+  const [editTitle, setEditTitle] = useState(task.title)
+
+  function handleEditSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    const trimmedTitle = editTitle.trim()
+
+    if (!trimmedTitle) {
+      return
+    }
+
+    onEdit({
+      ...task,
+      title: trimmedTitle,
+    })
+
+    setIsEditing(false)
+  }
+
+  function handleCancel() {
+    setEditTitle(task.title)
+    setIsEditing(false)
+  }
+
+  if (isEditing) {
+    return (
+      <li>
+        <form
+          className="task-edit-form"
+          onSubmit={handleEditSubmit}
+        >
+          <input
+            type="text"
+            value={editTitle}
+            onChange={(event) => setEditTitle(event.target.value)}
+            autoFocus
+          />
+          <button type="submit">
+            Сохранить
+          </button>
+          <button
+            className="task-edit-cancel"
+            type="button"
+            onClick={handleCancel}
+          >
+            Отмена
+          </button>
+        </form>
+      </li>
+    )
+  }
+
   return (
     <li>
       <label>
@@ -31,7 +85,7 @@ function TaskItem({
         </span>
       </label>
 
-      <button type="button" onClick={() => onEdit(task)}>
+      <button type="button" onClick={() => setIsEditing(true)}>
         Изменить
       </button>
 

@@ -81,28 +81,16 @@ function TasksPage() {
       setError('Не удалось удалить задачу')
     }
   }
-  async function handleEdit(task: Task) {
-    const newTitle = window.prompt(
-      'Новое название задачи',
-      task.title,
-    )?.trim()
-
-    if (!newTitle || newTitle === task.title) {
-      return
-    }
-
-    const updatedTask = {
-      ...task,
-      title: newTitle,
-    }
-
+  async function handleEdit(updatedTask: Task) {
     try {
       setError('')
       await updateTask(updatedTask)
 
       setTasks((currentTasks) =>
         currentTasks.map((currentTask) =>
-          currentTask.id === task.id ? updatedTask : currentTask,
+          currentTask.id === updatedTask.id
+            ? updatedTask
+            : currentTask,
         ),
       )
     } catch {
