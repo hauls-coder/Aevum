@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getCurrentUser, logout } from './api/authApi'
 import LoginPage from './pages/LoginPage'
+import ProfilePage from './pages/ProfilePage'
 import RegisterPage from './pages/RegisterPage'
 import TasksPage from './pages/TasksPage'
 import './App.css'
@@ -10,6 +11,8 @@ function App() {
     useState<boolean | null>(null)
   const [authPage, setAuthPage] =
     useState<'login' | 'register'>('login')
+  const [appPage, setAppPage] =
+    useState<'tasks' | 'profile'>('tasks')
 
   useEffect(() => {
     getCurrentUser()
@@ -53,7 +56,20 @@ function App() {
     )
   }
 
-  return <TasksPage onLogout={handleLogout} />
+  if (appPage === 'profile') {
+    return (
+      <ProfilePage
+      onBack={() => setAppPage('tasks')}
+      />
+    )
+  }
+
+  return (
+  <TasksPage 
+  onLogout={handleLogout} 
+  onProfile={() => setAppPage('profile')}
+  />
+  )
 }
 
 export default App

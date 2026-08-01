@@ -12,9 +12,13 @@ import '../App.css'
 
 interface TasksPageProps {
   onLogout: () => void
+  onProfile: () => void
 }
 
-function TasksPage({ onLogout }: TasksPageProps) {
+function TasksPage({
+  onLogout,
+  onProfile,
+}: TasksPageProps) {
   const [tasks, setTasks] = useState<Task[]>([])
   const [title, setTitle] = useState('')
   const [isLoading, setIsLoading] = useState(true)
@@ -113,6 +117,9 @@ function TasksPage({ onLogout }: TasksPageProps) {
 
   return (
     <main className="app">
+      <button type="button" onClick={onProfile}>
+        Профиль
+      </button>
       <button type="button" onClick={onLogout}>
         Выйти
       </button>
