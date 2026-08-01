@@ -179,3 +179,19 @@
 .tasks-heading p {
   text-align: left;
 }
+
+.status-message {
+  margin: 0;
+  padding: 18px;
+  border: 1px solid #2f2c29;
+  border-radius: 14px;
+  background: #151517;
+  color: #a79e92;
+  line-height: 1.5;
+}
+
+.status-message--error {
+  border-color: #633a36;
+  background: #211616;
+  color: #e1aaa3;
+}

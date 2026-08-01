@@ -113,7 +113,11 @@ function TasksPage() {
     (task) => task.isCompleted,
   ).length
   if (isLoading) {
-    return <p>Загрузка задач...</p>
+    return (
+      <main className="app">
+        <p className="status-message">Загрузка задач...</p>
+      </main>
+    )
   }
 
   return (
@@ -135,7 +139,11 @@ function TasksPage() {
         onSubmit={handleSubmit}
       />
 
-      {error && <p>{error}</p>}
+      {error && (
+        <p className="status-message status-message--error">
+          {error}
+        </p>
+      )}
 
       <TaskList
         tasks={tasks}

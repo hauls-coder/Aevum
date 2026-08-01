@@ -15,7 +15,11 @@ function TaskList({
   onDelete,
 }: TaskListProps) {
   if (tasks.length === 0) {
-    return <p>Задач пока нет.</p>
+    return (
+      <p className="status-message">
+        Задач пока нет. Создай первую задачу выше.
+      </p>
+    )
   }
 
   return (
