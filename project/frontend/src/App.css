@@ -1,136 +1,146 @@
 .app {
   width: 100%;
-  max-width: 430px;
+  max-width: 560px;
   min-height: 100vh;
   margin: 0 auto;
-  padding: 28px 20px 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  text-align: left;
-  background: #0d0d0f;
+  padding: 56px 20px;
 }
 
-.app-header {
-  display: grid;
-  grid-template-columns: 44px 1fr 44px;
-  align-items: center;
-  margin-bottom: 56px;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  color: #c99a45;
-  font-family: Georgia, serif;
-  font-size: 18px;
-  letter-spacing: 6px;
-}
-
-.brand-logo {
-  font-size: 25px;
-  letter-spacing: 0;
-}
-
-.icon-button {
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: #c99a45;
-  font-size: 25px;
-  cursor: pointer;
-}
-
-.welcome h1 {
-  margin: 0;
+.app h1 {
+  margin: 0 0 32px;
   color: #f3eee5;
-  font-size: 34px;
-  line-height: 1.15;
+  font-family: Georgia, serif;
+  font-size: 40px;
   font-weight: 500;
   letter-spacing: -1px;
 }
 
-.welcome p {
-  margin: 12px 0 0;
-  color: #a79e92;
-  font-size: 16px;
-  line-height: 1.5;
-}
-
-@media (min-width: 600px) {
-  .app {
-    border-left: 1px solid #242426;
-    border-right: 1px solid #242426;
-  }
-}
-.focus-card {
-  margin-top: 34px;
-  padding: 22px;
+.app form {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  border: 1px solid #29292c;
-  border-radius: 22px;
-  background: linear-gradient(135deg, #171719, #111113);
+  gap: 10px;
+  margin-bottom: 28px;
 }
 
-.section-label {
-  display: block;
-  margin-bottom: 16px;
-  color: #c99a45;
-  font-size: 13px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+.app form input {
+  min-width: 0;
+  flex: 1;
+  padding: 14px 16px;
+  border: 1px solid #302d29;
+  border-radius: 12px;
+  outline: none;
+  background: #151517;
+  color: #f3eee5;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
-.focus-card h2 {
-  max-width: 220px;
+.app form input::placeholder {
+  color: #7f786f;
+}
+
+.app form input:focus {
+  border-color: #c99a45;
+  box-shadow: 0 0 0 3px rgb(201 154 69 / 12%);
+}
+
+.app button {
+  border: 1px solid #3b342a;
+  border-radius: 10px;
+  background: #1b1917;
+  color: #d8c7a5;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.app button:hover {
+  border-color: #c99a45;
+  color: #f3eee5;
+}
+
+.app form button {
+  padding: 0 20px;
+  border-color: #a87524;
+  background: linear-gradient(135deg, #c99a45, #7a5424);
+  color: #0d0d0f;
+  font-weight: 700;
+}
+
+.app form button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.app ul {
   margin: 0;
-  color: #f3eee5;
-  font-size: 21px;
-  line-height: 1.35;
-  font-weight: 500;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  list-style: none;
 }
 
-.focus-card p {
-  margin: 12px 0 0;
-  color: #a79e92;
-  font-size: 14px;
-}
-
-.progress-ring {
-  width: 92px;
-  height: 92px;
-  flex-shrink: 0;
-  padding: 7px;
-  border-radius: 50%;
-}
-
-.progress-ring-inner {
-  width: 100%;
-  height: 100%;
+.app li {
+  padding: 16px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #141416;
+  gap: 10px;
+  border: 1px solid #29272a;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #171719, #121214);
 }
 
-.progress-ring strong {
+.app li label {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.app li input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: #c99a45;
+}
+
+.app li span {
+  overflow-wrap: anywhere;
   color: #f3eee5;
-  font-size: 21px;
-  font-weight: 500;
+  line-height: 1.4;
 }
 
-.progress-ring span {
-  margin-top: 2px;
-  color: #8e877e;
-  font-size: 11px;
+.app li button {
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.app > p {
+  color: #a79e92;
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding: 36px 16px;
+  }
+
+  .app h1 {
+    font-size: 34px;
+  }
+
+  .app form {
+    flex-direction: column;
+  }
+
+  .app form button {
+    min-height: 46px;
+  }
+
+  .app li {
+    flex-wrap: wrap;
+  }
 }
