@@ -1,3 +1,5 @@
+using backend.Models;
+using Microsoft.AspNetCore.Identity;
 using backend.Services;
 using backend.Data;
 using Microsoft.EntityFrameworkCore;
@@ -14,13 +16,18 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins("http://127.0.0.1:5173")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 builder.Services.AddScoped<TaskService>();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddAuthorization();
 
+builder.Services
+   .AddIdentityApiEndpoints<AppUser>()
+   .AddEntityFrameworkStores<AppDbContext>();
 
 var app = builder.Build();
 
@@ -53,6 +60,11 @@ app.MapGet("/weatherforecast", () =>
 
 app.MapGet("/", () => "Добро пожаловать в Aevum!");
 app.UseCors("Frontend");
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapGroup("/api/auth")
+   .MapIdentityApi<AppUser>();
 app.MapControllers();
 app.Run();
 
