@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
 import { getCurrentUser, logout } from './api/authApi'
 import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
 import TasksPage from './pages/TasksPage'
 import './App.css'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] =
     useState<boolean | null>(null)
+  const [authPage, setAuthPage] =
+    useState<'login' | 'register'>('login')
 
   useEffect(() => {
     getCurrentUser()
@@ -34,9 +37,18 @@ function App() {
   }
 
   if (!isAuthenticated) {
+    if (authPage === 'register') {
+      return (
+        <RegisterPage
+           onLogin={() => setAuthPage('login')}
+        />
+      )
+    }
+
     return (
       <LoginPage
         onLogin={() => setIsAuthenticated(true)}
+        onRegister={() => setAuthPage('register')}
       />
     )
   }

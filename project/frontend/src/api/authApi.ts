@@ -2,7 +2,7 @@ const AUTH_API_URL = 'http://127.0.0.1:5037/api/auth'
 
 export async function register(
     email: string,
-    password: string, 
+    password: string,
 ): Promise<void> {
     const response = await fetch(`${AUTH_API_URL}/register`, {
         method: 'POST',
@@ -15,9 +15,17 @@ export async function register(
             password,
         }),
     })
-    
+
     if (!response.ok) {
-        throw new Error('Не удалось зарегистрироваться')
+        const data = await response.json()
+
+        const messages = Object.values(data.errors ?? {})
+            .flat()
+            .join(' ')
+
+        throw new Error(
+            messages || 'Не удалось зарегистрироваться',
+        )
     }
 }
 export async function login(
@@ -38,8 +46,8 @@ export async function login(
             }),
         },
     )
-    
-    if(!response.ok) {
+
+    if (!response.ok) {
         throw new Error('Неверный email или пароль')
     }
 }
@@ -50,7 +58,7 @@ export interface AuthUser {
 }
 
 export async function getCurrentUser():
-  Promise<AuthUser | null> {
+    Promise<AuthUser | null> {
     const response = await fetch(
         `${AUTH_API_URL}/manage/info`,
         {
@@ -59,20 +67,18 @@ export async function getCurrentUser():
         },
     )
 
-    if(response.status === 401) {
+    if (response.status === 401) {
         return null
     }
 
     if (!response.ok) {
-        throw new Error(
-            'Не удалось проверить авторизацию',
-        )
+        throw new Error('Не удалось проверить авторизацию')
     }
 
     return response.json()
-  }
+}
 
-  export async function logout(): Promise<void> {
+export async function logout(): Promise<void> {
     const response = await fetch(
         `${AUTH_API_URL}/logout`,
         {
@@ -84,4 +90,4 @@ export async function getCurrentUser():
     if (!response.ok) {
         throw new Error('Не удалось выйти из аккаунта')
     }
-  }
+}

@@ -3,9 +3,10 @@ import { login } from '../api/authApi'
 
 interface LoginPageProps {
     onLogin: () => void
+    onRegister: () => void
 }
 
-function LoginPage({ onLogin }: LoginPageProps) {
+function LoginPage({ onLogin, onRegister }: LoginPageProps) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -59,6 +60,10 @@ function LoginPage({ onLogin }: LoginPageProps) {
                     {isSubmitting ? 'Вход...' : 'Войти'}
                 </button>
             </form>
+
+            <button type="button" onClick={onRegister}>
+                Создать аккаунт
+            </button>
 
             {error && (
                 <p className="status-message status-message--error">
