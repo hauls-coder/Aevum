@@ -11,20 +11,27 @@ public class TaskService
     {
         this.context = context;
     }
-    public List<TaskItem> Get()
+    public List<TaskItem> Get(string userId)
     {
-        return context.Tasks.ToList();
+        return context.Tasks
+        .Where(task => task.UserId == userId)
+        .ToList();
     }
 
-    public void Create(TaskItem task)
+    public void Create(TaskItem task, string userId)
     {
+        task.UserId = userId;
+
+
         context.Tasks.Add(task);
         context.SaveChanges();
     }
 
-    public string Delete(int id)
+    public string Delete(int id, string userId)
     {
-        var task = context.Tasks.Find(id);
+        var task = context.Tasks.SingleOrDefault(
+            task => task.Id == id && task.UserId == userId
+        );
 
         if (task == null)
         {
@@ -37,9 +44,15 @@ public class TaskService
         return "Задача успешно удалена!";
     }
 
-    public string Update(int id, TaskItem updatedTask)
+    public string Update(
+        int id,
+        TaskItem updatedTask,
+        string userId
+    )
     {
-        var task = context.Tasks.Find(id);
+        var task = context.Tasks.SingleOrDefault(
+            task => task.Id == id && task.UserId == userId
+        );
 
         if (task == null)
         {

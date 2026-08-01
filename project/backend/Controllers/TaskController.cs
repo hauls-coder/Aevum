@@ -1,9 +1,12 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using backend.Services;
 
 namespace backend.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/tasks")]
 public class TasksController : ControllerBase
@@ -18,13 +21,21 @@ public class TasksController : ControllerBase
     [HttpGet]
     public List<TaskItem> Get()
     {
-        return taskService.Get();
+        var userId = User.FindFirstValue(
+            ClaimTypes.NameIdentifier
+        )!;
+
+        return taskService.Get(userId);
     }
 
     [HttpPost]
     public string Create(TaskItem task)
     {
-        taskService.Create(task);
+        var userId = User.FindFirstValue(
+            ClaimTypes.NameIdentifier
+        )!;
+
+        taskService.Create(task, userId);
 
         return $"Задача '{task.Title}' успешно создана!";
     }
@@ -32,14 +43,25 @@ public class TasksController : ControllerBase
     [HttpDelete("{id}")]
     public string Delete(int id)
     {
-        return taskService.Delete(id);
+        var userId = User.FindFirstValue(
+            ClaimTypes.NameIdentifier
+        )!;
+
+        return taskService.Delete(id, userId);
     }
 
     [HttpPut("{id}")]
     public string Update(int id, TaskItem updatedTask)
     {
-        return taskService.Update(id, updatedTask);
+        var userId = User.FindFirstValue(
+            ClaimTypes.NameIdentifier
+        )!;
+
+        return taskService.Update(
+            id,
+            updatedTask,
+            userId
+        );
     }
 }
 
-    

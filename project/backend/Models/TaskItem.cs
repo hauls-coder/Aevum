@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace backend.Models;
 
 public class TaskItem
@@ -7,5 +8,10 @@ public class TaskItem
     public string Title { get; set; } = "";
 
     public bool IsCompleted { get; set; } 
+
+    public string? UserId { get; set; }
+
+    [JsonIgnore]
+    public AppUser? User { get; set; }
 
 }
