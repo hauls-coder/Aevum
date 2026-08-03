@@ -9,6 +9,7 @@ import {
 } from '../api/tasksApi'
 import type { Task } from '../types/task'
 import '../App.css'
+import { getProfile } from '../api/profileApi'
 
 interface TasksPageProps {
   onLogout: () => void
@@ -24,12 +25,20 @@ function TasksPage({
   const [isLoading, setIsLoading] = useState(true)
   const [isCreating, setIsCreating] = useState(false)
   const [error, setError] = useState('')
+  const [displayName, setDisplayName] = useState('')
 
   useEffect(() => {
     getTasks()
       .then(setTasks)
       .catch(() => setError('Не удалось загрузить задачи'))
       .finally(() => setIsLoading(false))
+    getProfile()
+      .then((profile) => {
+        setDisplayName(profile.displayName)
+      })
+      .catch(() => {
+        setDisplayName('')
+      })
   }, [])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -117,20 +126,38 @@ function TasksPage({
 
   return (
     <main className="app">
-      <button type="button" onClick={onProfile}>
-        Профиль
-      </button>
-      <button type="button" onClick={onLogout}>
-        Выйти
-      </button>
-      <header className="tasks-heading">
-        <div>
-          <span className="brand-label">AEVUM</span>
-          <h1>Задачи</h1>
+      <header className="tasks-header">
+        <div className="tasks-topbar">
+          <div className="brand-navigation">
+            <span className="brand-label">AEVUM</span>
+
+            <button
+              type="button"
+              className="profile-button"
+              onClick={onProfile}
+            >
+              <span className="user-display-name">
+                Профиль: {displayName || 'Пользователь'}
+              </span>
+            </button>
+          </div>
+
+          <button
+            type="button"
+            className="logout-button"
+            onClick={onLogout}
+          >
+            Выйти
+          </button>
         </div>
-        <p>
-          {completedCount} из {tasks.length} выполнено
-        </p>
+
+        <div className="tasks-heading">
+          <h1>Задачи</h1>
+
+          <p>
+            {completedCount} из {tasks.length} выполнено
+          </p>
+        </div>
       </header>
 
       <TaskForm

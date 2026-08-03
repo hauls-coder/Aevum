@@ -119,7 +119,7 @@
   font-size: 13px;
 }
 
-.app > p {
+.app>p {
   color: #a79e92;
 }
 
@@ -144,6 +144,7 @@
     flex-wrap: wrap;
   }
 }
+
 .tasks-heading {
   margin-bottom: 32px;
   padding-bottom: 22px;
@@ -155,10 +156,40 @@
 }
 
 .brand-label {
+  display: block;
   color: #c99a45;
   font-family: Georgia, serif;
-  font-size: 12px;
-  letter-spacing: 5px;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: 7px;
+  line-height: 38px;
+}
+
+.tasks-topbar {
+  margin-bottom: 36px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+
+.brand-navigation {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.app .profile-button,
+.app .logout-button {
+  min-height: 38px;
+  padding: 0 14px;
+}
+
+.tasks-heading h1 {
+  margin: 0;
+  font-size: 28px;
 }
 
 .tasks-heading p {
@@ -222,4 +253,16 @@
   .app .task-edit-form input {
     grid-column: 1 / -1;
   }
+}
+
+.app .profile-button {
+  min-height: 38px;
+  padding: 0 14px;
+  text-align: left;
+}
+
+.user-display-name {
+  color: #d8c7a5;
+  font-size: 14px;
+  font-weight: 500;
 }
