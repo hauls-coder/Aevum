@@ -14,11 +14,13 @@ import { getProfile } from '../api/profileApi'
 interface TasksPageProps {
   onLogout: () => void
   onProfile: () => void
+  onCalendar: () => void
 }
 
 function TasksPage({
   onLogout,
   onProfile,
+  onCalendar,
 }: TasksPageProps) {
   const [tasks, setTasks] = useState<Task[]>([])
   const [title, setTitle] = useState('')
@@ -154,9 +156,18 @@ function TasksPage({
         <div className="tasks-heading">
           <h1>Задачи</h1>
 
-          <p>
-            {completedCount} из {tasks.length} выполнено
-          </p>
+          <div className="tasks-heading-meta">
+            <p>
+              {completedCount} из {tasks.length} выполнено
+            </p>
+
+            <button
+              type="button"
+              onClick={onCalendar}
+            >
+              Календарь
+            </button>
+          </div>
         </div>
       </header>
 

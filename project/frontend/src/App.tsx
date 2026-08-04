@@ -5,6 +5,7 @@ import ProfilePage from './pages/ProfilePage'
 import RegisterPage from './pages/RegisterPage'
 import TasksPage from './pages/TasksPage'
 import './App.css'
+import CalendarPage from './pages/CalendarPage'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] =
@@ -12,7 +13,9 @@ function App() {
   const [authPage, setAuthPage] =
     useState<'login' | 'register'>('login')
   const [appPage, setAppPage] =
-    useState<'tasks' | 'profile'>('tasks')
+    useState<
+        'tasks' | 'profile' | 'calendar'
+    >('tasks')
 
   useEffect(() => {
     getCurrentUser()
@@ -56,6 +59,14 @@ function App() {
     )
   }
 
+  if (appPage === 'calendar') {
+    return (
+      <CalendarPage
+         onBack={() => setAppPage('tasks')}
+      />
+    )
+  }
+
   if (appPage === 'profile') {
     return (
       <ProfilePage
@@ -68,6 +79,7 @@ function App() {
   <TasksPage 
   onLogout={handleLogout} 
   onProfile={() => setAppPage('profile')}
+  onCalendar={() => setAppPage('calendar')}
   />
   )
 }

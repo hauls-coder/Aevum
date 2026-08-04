@@ -266,3 +266,65 @@
   font-size: 14px;
   font-weight: 500;
 }
+
+.app .calendar-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 12px;
+}
+
+.calendar-form input[type='text'] {
+  grid-column: 1 / -1;
+}
+
+.calendar-form input[type='datetime-local'] {
+  width: 100%;
+  min-width: 0;
+}
+
+.calendar-form label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #d8c7a5;
+}
+
+.calendar-form label input {
+  flex: none;
+}
+
+@media (max-width: 480px) {
+  .app .calendar-form {
+    grid-template-columns: 1fr;
+  }
+
+  .calendar-form input[type='text'] {
+    grid-column: auto;
+  }
+}
+
+.app .calendar-form button {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 12px;
+  font-size: 18px;
+}
+
+.tasks-heading-meta {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tasks-heading-meta p {
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  .tasks-heading-meta {
+    align-items: flex-start;
+  }
+}
