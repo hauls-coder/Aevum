@@ -14,7 +14,10 @@ export async function getTasks(): Promise<Task[]> {
   return response.json()
 }
 
-export async function createTask(title: string): Promise<void> {
+export async function createTask(
+  title: string,
+  description: string,
+): Promise<void> {
   const response = await fetch(API_URL, {
     method: 'POST',
     headers: {
@@ -23,6 +26,7 @@ export async function createTask(title: string): Promise<void> {
     credentials: 'include',
     body: JSON.stringify({
       title,
+      description: description || null,
       isCompleted: false,
     }),
   })

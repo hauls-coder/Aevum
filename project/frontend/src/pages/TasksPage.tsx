@@ -24,6 +24,7 @@ function TasksPage({
 }: TasksPageProps) {
   const [tasks, setTasks] = useState<Task[]>([])
   const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isCreating, setIsCreating] = useState(false)
   const [error, setError] = useState('')
@@ -56,11 +57,12 @@ function TasksPage({
       setIsCreating(true)
       setError('')
 
-      await createTask(trimmedTitle)
+      await createTask(trimmedTitle, description.trim())
 
       const updatedTasks = await getTasks()
       setTasks(updatedTasks)
       setTitle('')
+      setDescription('')
     } catch {
       setError('Не удалось создать задачу')
     } finally {
@@ -173,8 +175,10 @@ function TasksPage({
 
       <TaskForm
         title={title}
+        description={description}
         isCreating={isCreating}
         onTitleChange={setTitle}
+        onDescriptionChange={setDescription}
         onSubmit={handleSubmit}
       />
 

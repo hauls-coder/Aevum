@@ -20,6 +20,8 @@ public class TaskService
 
     public void Create(TaskItem task, string userId)
     {
+        task.Title = task.Title.Trim();
+        task.Description = NormalizeDescription(task.Description);
         task.UserId = userId;
 
 
@@ -59,11 +61,21 @@ public class TaskService
             return "Задача не найдена!";
         }
 
-        task.Title = updatedTask.Title;
+        task.Title = updatedTask.Title.Trim();
+        task.Description = NormalizeDescription(updatedTask.Description);
         task.IsCompleted = updatedTask.IsCompleted;
 
         context.SaveChanges();
 
         return "Задача успешно обновлена!";
+    }
+
+    private static string? NormalizeDescription(string? description)
+    {
+        var normalizedDescription = description?.Trim();
+
+        return string.IsNullOrEmpty(normalizedDescription)
+            ? null
+            : normalizedDescription;
     }
 }
