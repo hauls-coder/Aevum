@@ -63,6 +63,8 @@ public class TaskService
 
         task.Title = updatedTask.Title.Trim();
         task.Description = NormalizeDescription(updatedTask.Description);
+        task.StartsAt = updatedTask.StartsAt;
+        task.EndsAt = updatedTask.EndsAt;
         task.IsCompleted = updatedTask.IsCompleted;
 
         context.SaveChanges();

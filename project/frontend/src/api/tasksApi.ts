@@ -17,6 +17,8 @@ export async function getTasks(): Promise<Task[]> {
 export async function createTask(
   title: string,
   description: string,
+  startsAt: string | null = null,
+  endsAt: string | null = null,
 ): Promise<void> {
   const response = await fetch(API_URL, {
     method: 'POST',
@@ -27,6 +29,8 @@ export async function createTask(
     body: JSON.stringify({
       title,
       description: description || null,
+      startsAt,
+      endsAt,
       isCompleted: false,
     }),
   })

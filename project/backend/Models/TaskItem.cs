@@ -9,6 +9,11 @@ public class TaskItem
 
     public string? Description { get; set; }
 
+    // Запланированное время выполнения задачи
+    public DateTimeOffset? StartsAt { get; set; }
+
+    public DateTimeOffset? EndsAt { get; set; }
+
     public bool IsCompleted { get; set; } 
 
     public string? UserId { get; set; }

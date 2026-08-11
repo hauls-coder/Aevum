@@ -17,6 +17,20 @@ interface TasksPageProps {
   onCalendar: () => void
 }
 
+// Объединяет сегодняшнюю дату с выбранным временем
+function combineTodayWithTime(time: string): string | null {
+  if (!time) {
+    return null
+  }
+
+  const [hours, minutes] = time.split(':').map(Number)
+  const date = new Date()
+
+  date.setHours(hours, minutes, 0, 0)
+
+  return date.toISOString()
+}
+
 function TasksPage({
   onLogout,
   onProfile,
@@ -25,6 +39,8 @@ function TasksPage({
   const [tasks, setTasks] = useState<Task[]>([])
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [startTime, setStartTime] = useState('')
+  const [endTime, setEndTime] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isCreating, setIsCreating] = useState(false)
   const [error, setError] = useState('')
@@ -53,16 +69,35 @@ function TasksPage({
       return
     }
 
+    const startsAt = combineTodayWithTime(startTime)
+    const endsAt = combineTodayWithTime(endTime)
+
+    if (
+      startsAt &&
+      endsAt &&
+      new Date(endsAt) <= new Date(startsAt)
+    ) {
+      setError('Время окончания должно быть позже времени начала')
+      return
+    }
+
     try {
       setIsCreating(true)
       setError('')
 
-      await createTask(trimmedTitle, description.trim())
+      await createTask(
+        trimmedTitle,
+        description.trim(),
+        startsAt,
+        endsAt,
+      )
 
       const updatedTasks = await getTasks()
       setTasks(updatedTasks)
       setTitle('')
       setDescription('')
+      setStartTime('')
+      setEndTime('')
     } catch {
       setError('Не удалось создать задачу')
     } finally {
@@ -176,9 +211,13 @@ function TasksPage({
       <TaskForm
         title={title}
         description={description}
+        startTime={startTime}
+        endTime={endTime}
         isCreating={isCreating}
         onTitleChange={setTitle}
         onDescriptionChange={setDescription}
+        onStartTimeChange={setStartTime}
+        onEndTimeChange={setEndTime}
         onSubmit={handleSubmit}
       />
 

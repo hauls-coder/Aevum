@@ -17,31 +17,59 @@
 
 .app form {
   display: flex;
-  gap: 10px;
+  flex-direction: column;
+  gap: 12px;
   margin-bottom: 28px;
 }
 
-.app form input {
+.app form input,
+.app form textarea {
   min-width: 0;
-  flex: 1;
   padding: 14px 16px;
   border: 1px solid #302d29;
   border-radius: 12px;
   outline: none;
   background: #151517;
   color: #f3eee5;
+  font-family: inherit;
   transition:
     border-color 160ms ease,
     box-shadow 160ms ease;
 }
 
-.app form input::placeholder {
+.app form textarea {
+  resize: vertical;
+}
+
+.app form input::placeholder,
+.app form textarea::placeholder {
   color: #7f786f;
 }
 
-.app form input:focus {
+.app form input:focus,
+.app form textarea:focus {
   border-color: #c99a45;
   box-shadow: 0 0 0 3px rgb(201 154 69 / 12%);
+}
+
+/* Ряд с временем начала и окончания */
+.task-form-time-row {
+  display: flex;
+  gap: 10px;
+}
+
+.task-form-time-row label {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #a79e92;
+  font-size: 14px;
+}
+
+.task-form-time-row input {
+  width: 100%;
 }
 
 .app button {
@@ -62,11 +90,15 @@
 }
 
 .app form button {
+  min-height: 52px;
   padding: 0 20px;
   border-color: #a87524;
+  border-radius: 12px;
   background: linear-gradient(135deg, #c99a45, #7a5424);
   color: #0d0d0f;
   font-weight: 700;
+  font-size: 16px;
+  box-shadow: 0 4px 14px rgb(201 154 69 / 25%);
 }
 
 .app form button:disabled {
@@ -82,11 +114,13 @@
   list-style: none;
 }
 
+
 .app li {
   padding: 16px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
+  flex-wrap: wrap;
   border: 1px solid #29272a;
   border-radius: 14px;
   background: linear-gradient(135deg, #171719, #121214);
@@ -96,7 +130,7 @@
   min-width: 0;
   flex: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   cursor: pointer;
 }
@@ -104,14 +138,46 @@
 .app li input[type='checkbox'] {
   width: 18px;
   height: 18px;
+  margin-top: 3px;
   flex-shrink: 0;
   accent-color: #c99a45;
+}
+
+.task-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .app li span {
   overflow-wrap: anywhere;
   color: #f3eee5;
   line-height: 1.4;
+}
+
+.task-description {
+  color: #a79e92;
+  font-size: 13px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.task-time {
+  color: #c99a45;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.app .task-edit-form .task-form-time-row {
+  grid-column: 1 / -1;
+}
+
+.edit-time-error {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #e1aaa3;
+  font-size: 13px;
 }
 
 .app li button {
