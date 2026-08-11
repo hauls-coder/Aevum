@@ -5,4 +5,5 @@ export interface Task {
   startsAt: string | null
   endsAt: string | null
   isCompleted: boolean
+  isFocus: boolean
 }

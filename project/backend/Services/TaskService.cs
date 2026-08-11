@@ -72,6 +72,51 @@ public class TaskService
         return "Задача успешно обновлена!";
     }
 
+    public string SetFocus(int id, string userId)
+    {
+        var task = context.Tasks.SingleOrDefault(
+            task => task.Id == id && task.UserId == userId
+        );
+
+        if (task == null)
+        {
+            return "Задача не найдена!";
+        }
+
+        var currentFocusTasks = context.Tasks.Where(
+            t => t.UserId == userId && t.IsFocus
+        );
+
+        foreach (var focusedTask in currentFocusTasks)
+        {
+            focusedTask.IsFocus = false;
+        }
+        
+        task.IsFocus = true;
+
+        context.SaveChanges();
+
+        return "Фокус дня установлен!";
+    }
+
+    public string ClearFocus(int id, string userId)
+    {
+        var task = context.Tasks.SingleOrDefault(
+            task => task.Id == id && task.UserId == userId
+        );
+
+        if (task == null)
+        {
+            return "Задача не найдена!";
+        }
+
+        task.IsFocus = false;
+
+        context.SaveChanges();
+
+        return "Фокус дня снят!";
+    }
+
     private static string? NormalizeDescription(string? description)
     {
         var normalizedDescription = description?.Trim();

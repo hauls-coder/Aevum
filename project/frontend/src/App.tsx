@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getCurrentUser, logout } from './api/authApi'
+import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import ProfilePage from './pages/ProfilePage'
 import RegisterPage from './pages/RegisterPage'
@@ -14,8 +15,8 @@ function App() {
     useState<'login' | 'register'>('login')
   const [appPage, setAppPage] =
     useState<
-        'tasks' | 'profile' | 'calendar'
-    >('tasks')
+        'home' | 'tasks' | 'profile' | 'calendar'
+    >('home')
 
   useEffect(() => {
     getCurrentUser()
@@ -62,7 +63,7 @@ function App() {
   if (appPage === 'calendar') {
     return (
       <CalendarPage
-         onBack={() => setAppPage('tasks')}
+         onBack={() => setAppPage('home')}
       />
     )
   }
@@ -70,17 +71,29 @@ function App() {
   if (appPage === 'profile') {
     return (
       <ProfilePage
-      onBack={() => setAppPage('tasks')}
+      onBack={() => setAppPage('home')}
+      />
+    )
+  }
+
+  if (appPage === 'tasks') {
+    return (
+      <TasksPage
+        onLogout={handleLogout}
+        onProfile={() => setAppPage('profile')}
+        onCalendar={() => setAppPage('calendar')}
+        onHome={() => setAppPage('home')}
       />
     )
   }
 
   return (
-  <TasksPage 
-  onLogout={handleLogout} 
-  onProfile={() => setAppPage('profile')}
-  onCalendar={() => setAppPage('calendar')}
-  />
+    <HomePage
+      onLogout={handleLogout}
+      onProfile={() => setAppPage('profile')}
+      onCalendar={() => setAppPage('calendar')}
+      onTasks={() => setAppPage('tasks')}
+    />
   )
 }
 

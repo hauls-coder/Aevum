@@ -15,6 +15,7 @@ interface TasksPageProps {
   onLogout: () => void
   onProfile: () => void
   onCalendar: () => void
+  onHome: () => void
 }
 
 // Объединяет сегодняшнюю дату с выбранным временем
@@ -35,6 +36,7 @@ function TasksPage({
   onLogout,
   onProfile,
   onCalendar,
+  onHome,
 }: TasksPageProps) {
   const [tasks, setTasks] = useState<Task[]>([])
   const [title, setTitle] = useState('')
@@ -197,6 +199,13 @@ function TasksPage({
             <p>
               {completedCount} из {tasks.length} выполнено
             </p>
+
+            <button
+              type="button"
+              onClick={onHome}
+            >
+              Главная
+            </button>
 
             <button
               type="button"

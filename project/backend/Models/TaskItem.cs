@@ -16,6 +16,9 @@ public class TaskItem
 
     public bool IsCompleted { get; set; } 
 
+    // Является ли задача фокусом дня (только одна задача может быть фокусом)
+    public bool IsFocus { get; set; }
+
     public string? UserId { get; set; }
 
     [JsonIgnore]

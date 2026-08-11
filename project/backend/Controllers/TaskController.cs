@@ -63,5 +63,25 @@ public class TasksController : ControllerBase
             userId
         );
     }
+
+    [HttpPost("{id}/focus")]
+    public string SetFocus(int id)
+    {
+        var userId = User.FindFirstValue(
+            ClaimTypes.NameIdentifier
+        )!;
+
+        return taskService.SetFocus(id, userId);
+    }
+
+    [HttpPost("{id}/unfocus")]
+    public string ClearFocus(int id)
+    {
+        var userId = User.FindFirstValue(
+            ClaimTypes.NameIdentifier
+        )!;
+
+        return taskService.ClearFocus(id, userId);
+    }
 }
 

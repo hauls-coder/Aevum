@@ -394,3 +394,105 @@
     align-items: flex-start;
   }
 }
+
+.focus-panel {
+  margin-bottom: 28px;
+  padding: 20px;
+  border: 1px solid #29272a;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #171719, #121214);
+}
+
+.focus-panel-heading {
+  margin: 0 0 14px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c99a45;
+}
+
+focus-card-title {
+  font-size: 20px;
+  color: #f3eee5;
+  margin-bottom: 6px;
+}
+
+.focus-card-time {
+  color: #a79e92;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 16px;
+}
+
+.focus-card-actions {
+  background: transparent;
+}
+
+focus-empty p {
+  color: #a79e92;
+  margin: 0 0 14px;
+}
+
+.focus-picker-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.focus-picker-list li {
+  display: flex;
+  align-itens: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid #29272a;
+  border-radius: 12px;
+  background: #151517;
+}
+
+.home-nav {
+  display: flex;
+  gap: 10px;
+}
+
+.home-nav button {
+  flex: 1;
+  min-height: 46px;
+}
+
+.focus-card-timer {
+  font-size: 28px;
+  font-variant-numeric: tabular-nums;
+  color: #f3eee5;
+  margin-bottom: 16px;
+}
+
+.focus-card-time--done {
+  color: #e1aaa3;
+}
+
+.focus-complete-button {
+  border-color: #a87524;
+  background: linear-gradient(135deg, #c99a45, #7a5454);
+  color: #0d0d0f;
+  font-weight: 700;
+}
+
+@keyframes focus-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(201 154 69 / 0%);
+  }
+}
+
+.focus-complete-button--pulse {
+  animation: focus-pulce 1.6s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .focus-complete-button--pulse {
+    animation: none;
+  }
+}

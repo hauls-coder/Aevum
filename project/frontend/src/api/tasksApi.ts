@@ -63,3 +63,25 @@ export async function deleteTask(id: number): Promise<void> {
     throw new Error('Не удалось удалить задачу')
   }
 }
+
+export async function setFocus(id: number): Promise<void> {
+  const response = await fetch(`${API_URL}/${id}/focus`,{
+    method: 'POST',
+    credentials: 'include',
+  })
+
+  if (!response.ok) {
+    throw new Error('Не удалось установить фокус дня')
+  }
+}
+
+export async function clearFocus(id: number): Promise<void> {
+  const response = await fetch(`${API_URL}/${id}/unfocus`,{
+    method: 'POST',
+    credentials: 'include',
+  })
+
+  if (!response.ok) {
+    throw new Error('Не удалось снять фокус дня')
+  }
+}
