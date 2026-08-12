@@ -83,5 +83,35 @@ public class TasksController : ControllerBase
 
         return taskService.ClearFocus(id, userId);
     }
+
+    [HttpPost("{taskId}/subtasks")]
+    public string AddSubTask(int taskId, SubTask subTask)
+    {
+        var userId = User.FindFirstValue(
+            ClaimTypes.NameIdentifier
+        )!;
+
+        return taskService.AddSubTask(taskId, subTask, userId);
+    }
+
+    [HttpPut("{taskId}/subtasks/{subTaskId}")]
+    public string UpdateSubTask(int taskId, int subTaskId, SubTask subTask)
+    {
+        var userId = User.FindFirstValue(
+            ClaimTypes.NameIdentifier
+        )!;
+
+        return taskService.UpdateSubTask(taskId, subTaskId, subTask, userId);
+    }
+
+    [HttpDelete("{taskId}/subtasks/{subTaskId}")]
+    public string DeleteSubTask(int taskId, int subTaskId)
+    {
+        var userId = User.FindFirstValue(
+            ClaimTypes.NameIdentifier
+        )!;
+
+        return taskService.DeleteSubTask(taskId, subTaskId, userId);
+    }
 }
 

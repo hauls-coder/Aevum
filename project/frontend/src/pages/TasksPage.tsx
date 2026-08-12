@@ -2,12 +2,15 @@ import { useEffect, useState, type FormEvent } from 'react'
 import TaskForm from '../components/tasks/TaskForm'
 import TaskList from '../components/tasks/TaskList'
 import {
+  addSubTask,
   createTask,
+  deleteSubTask,
   deleteTask,
   getTasks,
+  updateSubTask,
   updateTask,
 } from '../api/tasksApi'
-import type { Task } from '../types/task'
+import type { SubTask, Task } from '../types/task'
 import '../App.css'
 import { getProfile } from '../api/profileApi'
 
@@ -154,6 +157,66 @@ function TasksPage({
       setError('Не удалось изменить название задачи')
     }
   }
+
+    async function handleCompleteAll(task: Task) {
+    try {
+      setError('')
+
+      await Promise.all(
+        task.subTasks
+          .filter((subTask) => !subTask.isCompleted)
+          .map((subTask) =>
+            updateSubTask(task.id, { ...subTask, isCompleted: true }),
+          ),
+      )
+      await updateTask({ ...task, isCompleted: true })
+
+      const updatedTasks = await getTasks()
+      setTasks(updatedTasks)
+    } catch {
+      setError('Не удалось завершить задачу и подзадачи')
+    }
+  }
+
+  async function handleAddSubTask(taskId: number, title: string) {
+    try {
+      setError('')
+      await addSubTask(taskId, title)
+
+      const updatedTasks = await getTasks()
+      setTasks(updatedTasks)
+    } catch {
+      setError('Не удалось добавить подзадачу')
+    }
+  }
+
+  async function handleToggleSubTask(taskId: number, subTask: SubTask) {
+    try {
+      setError('')
+      await updateSubTask(taskId, {
+        ...subTask,
+        isCompleted: !subTask.isCompleted,
+      })
+
+      const updatedTasks = await getTasks()
+      setTasks(updatedTasks)
+    } catch {
+      setError('Не удалось изменить подзадачу')
+    }
+  }
+
+  async function handleDeleteSubTask(taskId: number, subTaskId: number) {
+    try {
+      setError('')
+      await deleteSubTask(taskId, subTaskId)
+
+      const updatedTasks = await getTasks()
+      setTasks(updatedTasks)
+    } catch {
+      setError('Не удалось удалить подзадачу')
+    }
+  }
+
   const completedCount = tasks.filter(
     (task) => task.isCompleted,
   ).length
@@ -241,6 +304,10 @@ function TasksPage({
         onToggle={handleToggle}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onCompleteAll={handleCompleteAll}
+        onAddSubTask={handleAddSubTask}
+        onToggleSubTask={handleToggleSubTask}
+        onDeleteSubTask={handleDeleteSubTask}
       />
     </main>
   )

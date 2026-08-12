@@ -13,4 +13,7 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<TaskItem> Tasks { get; set; }
 
     public DbSet<CalendarEvent> CalendarEvents { get; set; }
+
+    public DbSet<SubTask> SubTasks { get; set; }
+
 }

@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import type { Task } from '../../types/task'
+import type { SubTask, Task } from '../../types/task'
 
 // Форматирует время задачи в вид ЧЧ:ММ
 function formatTime(iso: string | null): string {
@@ -45,6 +45,10 @@ interface TaskItemProps {
   onToggle: (task: Task) => void
   onEdit: (task: Task) => void
   onDelete: (id: number) => void
+  onCompleteAll: (task: Task) => void
+  onAddSubTask: (taskId: number, title: string) => void
+  onToggleSubTask: (taskId: number, subTask: SubTask) => void
+  onDeleteSubTask: (taskId: number, subTaskId: number) => void
 }
 
 function TaskItem({
@@ -52,6 +56,10 @@ function TaskItem({
   onToggle,
   onEdit,
   onDelete,
+  onCompleteAll,
+  onAddSubTask,
+  onToggleSubTask,
+  onDeleteSubTask,
 }: TaskItemProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editTitle, setEditTitle] = useState(task.title)
@@ -65,6 +73,7 @@ function TaskItem({
     toTimeInputValue(task.endsAt),
   )
   const [editError, setEditError] = useState('')
+  const [newSubTaskTitle, setNewSubTaskTitle] = useState('')
 
   function handleEditSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -103,6 +112,41 @@ function TaskItem({
     setEditEndTime(toTimeInputValue(task.endsAt))
     setEditError('')
     setIsEditing(false)
+  }
+
+  // Если у задачи есть незавершённые подзадачи, спрашиваем перед завершением
+  function handleToggle() {
+    const incompleteSubTasks = task.subTasks.filter(
+      (subTask) => !subTask.isCompleted,
+    )
+
+    if (!task.isCompleted && incompleteSubTasks.length > 0) {
+      const confirmed = window.confirm(
+        'У задачи есть невыполненные подзадачи. Отметить их все выполненными?',
+      )
+
+      if (!confirmed) {
+        return
+      }
+
+      onCompleteAll(task)
+      return
+    }
+
+    onToggle(task)
+  }
+
+  function handleAddSubTaskSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    const trimmedTitle = newSubTaskTitle.trim()
+
+    if (!trimmedTitle) {
+      return
+    }
+
+    onAddSubTask(task.id, trimmedTitle)
+    setNewSubTaskTitle('')
   }
 
   if (isEditing) {
@@ -162,13 +206,22 @@ function TaskItem({
       : formatTime(task.startsAt)
     : ''
 
+  const totalSubTasks = task.subTasks.length
+  const completedSubTasks = task.subTasks.filter(
+    (subTask) => subTask.isCompleted,
+  ).length
+  const progressPercent =
+    totalSubTasks > 0
+      ? Math.round((completedSubTasks / totalSubTasks) * 100)
+      : 0
+
   return (
     <li>
       <label>
         <input
           type="checkbox"
           checked={task.isCompleted}
-          onChange={() => onToggle(task)}
+          onChange={handleToggle}
         />
 
         <span className="task-text">
@@ -195,6 +248,64 @@ function TaskItem({
       <button type="button" onClick={() => onDelete(task.id)}>
         Удалить
       </button>
+
+      <div className="subtask-section">
+        {totalSubTasks > 0 && (
+          <div className="subtask-progress">
+            <div className="subtask-progress-bar">
+              <span style={{ width: `${progressPercent}%` }} />
+            </div>
+            <span className="subtask-progress-label">
+              {completedSubTasks} из {totalSubTasks}
+            </span>
+          </div>
+        )}
+
+        {totalSubTasks > 0 && (
+          <ul className="subtask-list">
+            {task.subTasks.map((subTask) => (
+              <li key={subTask.id} className="subtask-item">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={subTask.isCompleted}
+                    onChange={() => onToggleSubTask(task.id, subTask)}
+                  />
+                  <span
+                    style={{
+                      textDecoration: subTask.isCompleted
+                        ? 'line-through'
+                        : 'none',
+                    }}
+                  >
+                    {subTask.title}
+                  </span>
+                </label>
+                <button
+                  type="button"
+                  className="subtask-delete"
+                  onClick={() => onDeleteSubTask(task.id, subTask.id)}
+                >
+                  ✕
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <form
+          className="subtask-add-form"
+          onSubmit={handleAddSubTaskSubmit}
+        >
+          <input
+            type="text"
+            value={newSubTaskTitle}
+            onChange={(event) => setNewSubTaskTitle(event.target.value)}
+            placeholder="Добавить подзадачу"
+          />
+          <button type="submit">+</button>
+        </form>
+      </div>
     </li>
   )
 }

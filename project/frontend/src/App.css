@@ -563,3 +563,104 @@ focus-empty p {
   color: #a79e92;
   text-decoration: line-through;
 }
+
+.subtask-section {
+  flex-basis: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.subtask-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.subtask-progress-bar {
+  flex: 1;
+  height: 6px;
+  border-radius: 4px;
+  background: #29272a;
+  overflow: hidden;
+}
+
+.subtask-progress-bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #7a5424, #c99a45);
+  border-radius: 4px;
+}
+
+.subtask-progress-label {
+  font-size: 12px;
+  color: #a79e92;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.subtask-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.subtask-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid #29272a;
+  border-radius: 10px;
+  background: #151517;
+}
+
+.subtask-item label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.subtask-item input[type='checkbox'] {
+  width: 15px;
+  height: 15px;
+  accent-color: #c99a45;
+  flex-shrink: 0;
+}
+
+.subtask-item span {
+  font-size: 13.5px;
+  color: #f3eee5;
+  overflow-wrap: anywhere;
+}
+
+.subtask-delete {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.subtask-add-form {
+  display: flex;
+  gap: 8px;
+}
+
+.subtask-add-form input {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 13px;
+  border: 1px solid #302d29;
+  border-radius: 10px;
+  background: #151517;
+  color: #f3eee5;
+}
+
+.subtask-add-form button {
+  padding: 0 14px;
+  font-size: 15px;
+}

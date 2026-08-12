@@ -1,3 +1,9 @@
+export interface SubTask {
+  id: number
+  title: string
+  isCompleted: boolean
+}
+
 export interface Task {
   id: number
   title: string
@@ -6,4 +12,5 @@ export interface Task {
   endsAt: string | null
   isCompleted: boolean
   isFocus: boolean
+  subTasks: SubTask[]
 }

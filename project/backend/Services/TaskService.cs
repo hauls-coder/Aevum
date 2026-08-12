@@ -1,5 +1,6 @@
 using backend.Data;
 using backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services;
 
@@ -14,6 +15,7 @@ public class TaskService
     public List<TaskItem> Get(string userId)
     {
         return context.Tasks
+        .Include(task => task.SubTasks)
         .Where(task => task.UserId == userId)
         .ToList();
     }
@@ -115,6 +117,75 @@ public class TaskService
         context.SaveChanges();
 
         return "Фокус дня снят!";
+    }
+
+    public string AddSubTask(int taskId, SubTask subTask, string userId)
+    {
+        var task = context.Tasks.SingleOrDefault(
+            task => task.Id == taskId && task.UserId == userId
+        );
+
+        if (task == null)
+        {
+            return "Задача не найдена!";
+        }
+
+        subTask.Title = subTask.Title.Trim();
+        subTask.TaskItemId = taskId;
+
+        context.SubTasks.Add(subTask);
+        context.SaveChanges();
+
+        return "Подзадача добавлена!";
+    }
+
+    public string UpdateSubTask(
+        int taskId,
+        int subTaskId,
+        SubTask updatedSubTask,
+        string userId
+    )
+    {
+        var subTask = context.SubTasks
+            .Include(s => s.TaskItem)
+            .SingleOrDefault(
+                s => s.Id == subTaskId
+                    && s.TaskItemId == taskId
+                    && s.TaskItem!.UserId == userId
+            );
+
+        if (subTask == null)
+        {
+            return "Подзадача не найдена!";
+        }
+
+        subTask.Title = updatedSubTask.Title.Trim();
+        subTask.IsCompleted = updatedSubTask.IsCompleted;
+
+        context.SaveChanges();
+
+        return "Подзадача обновлена!";
+    }
+
+    public string DeleteSubTask(int taskId, int subTaskId, string userId)
+    {
+        var subTask = context.SubTasks
+            .Include(s => s.TaskItem)
+            .SingleOrDefault(
+                s => s.Id == subTaskId
+                    && s.TaskItemId == taskId
+                    && s.TaskItem!.UserId == userId
+            );
+
+        if (subTask == null)
+        {
+            return "Подзадача не найдена!";
+        }
+
+        context.SubTasks.Remove(subTask);
+        context.SaveChanges();
+
+        return "Подзадача удалена!";
     }
 
     private static string? NormalizeDescription(string? description)

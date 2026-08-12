@@ -19,6 +19,9 @@ public class TaskItem
     // Является ли задача фокусом дня (только одна задача может быть фокусом)
     public bool IsFocus { get; set; }
 
+    // Подзадачи этой задачи
+    public List<SubTask> SubTasks { get; set; } = new();
+
     public string? UserId { get; set; }
 
     [JsonIgnore]
