@@ -25,6 +25,9 @@ public class TaskItem
     // Повторяется ли задача каждый день
     public bool IsRecurring { get; set; }
 
+    // За сколько минут до начала напомнить (null — без напоминания)
+    public int? ReminderMinutesBefore { get; set; }
+
     public string? UserId { get; set; }
 
     [JsonIgnore]

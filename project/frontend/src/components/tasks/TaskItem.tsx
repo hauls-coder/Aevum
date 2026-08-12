@@ -239,7 +239,14 @@ function TaskItem({
             <span className="task-recurring-badge">Повторяется</span>
           )}
 
+          {task.reminderMinutesBefore != null && (
+            <span className="task-reminder-badge">
+              Напомнить за {task.reminderMinutesBefore} мин
+            </span>
+          )}
+
           {task.description && (
+
             <small className="task-description">{task.description}</small>
           )}
         </span>

@@ -71,6 +71,8 @@ public class TaskService
         task.EndsAt = updatedTask.EndsAt;
         task.IsCompleted = updatedTask.IsCompleted;
         task.IsRecurring = updatedTask.IsRecurring;
+        task.ReminderMinutesBefore = updatedTask.ReminderMinutesBefore;
+
 
         // Если повторяющуюся задачу только что завершили — создаём копию на завтра
         if (!wasCompleted && task.IsCompleted && task.IsRecurring)
@@ -92,6 +94,7 @@ public class TaskService
             StartsAt = completedTask.StartsAt?.AddDays(1),
             EndsAt = completedTask.EndsAt?.AddDays(1),
             IsRecurring = true,
+            ReminderMinutesBefore = completedTask.ReminderMinutesBefore,
             IsCompleted = false,
             UserId = userId,
         };

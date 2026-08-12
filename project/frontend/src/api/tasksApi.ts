@@ -20,6 +20,7 @@ export async function createTask(
   startsAt: string | null = null,
   endsAt: string | null = null,
   isRecurring: boolean = false,
+  reminderMinutesBefore: number | null = null,
 ): Promise<void> {
   const response = await fetch(API_URL, {
     method: 'POST',
@@ -34,6 +35,7 @@ export async function createTask(
       endsAt,
       isCompleted: false,
       isRecurring,
+      reminderMinutesBefore,
     }),
   })
 

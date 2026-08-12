@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getCurrentUser, logout } from './api/authApi'
+import { getTasks } from './api/tasksApi'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import ProfilePage from './pages/ProfilePage'
@@ -15,7 +16,7 @@ function App() {
     useState<'login' | 'register'>('login')
   const [appPage, setAppPage] =
     useState<
-        'home' | 'tasks' | 'profile' | 'calendar'
+      'home' | 'tasks' | 'profile' | 'calendar'
     >('home')
 
   useEffect(() => {
@@ -27,6 +28,81 @@ function App() {
         setIsAuthenticated(false)
       })
   }, [])
+
+  // Планирует браузерные напоминания о задачах, пока вкладка открыта
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return
+    }
+
+    if (
+      'Notification' in window &&
+      Notification.permission === 'default'
+    ) {
+      Notification.requestPermission()
+    }
+
+    let cancelled = false
+    const timers: number[] = []
+
+    async function scheduleReminders() {
+      try {
+        const tasks = await getTasks()
+
+        if (cancelled) {
+          return
+        }
+
+        timers.forEach((timerId) => window.clearTimeout(timerId))
+        timers.length = 0
+
+        const now = Date.now()
+
+        tasks.forEach((task) => {
+          if (
+            task.isCompleted ||
+            !task.startsAt ||
+            task.reminderMinutesBefore == null
+          ) {
+            return
+          }
+
+          const remindAt =
+            new Date(task.startsAt).getTime() -
+            task.reminderMinutesBefore * 60 * 1000
+          const delay = remindAt - now
+
+          if (delay <= 0 || delay > 24 * 60 * 60 * 1000) {
+            return
+          }
+
+          const timerId = window.setTimeout(() => {
+            if (
+              'Notification' in window &&
+              Notification.permission === 'granted'
+            ) {
+              new Notification('Aevum — напоминание', {
+                body: task.title,
+              })
+            }
+          }, delay)
+
+          timers.push(timerId)
+        })
+      } catch {
+        // напоминания не критичны — молча пропускаем ошибку загрузки
+      }
+    }
+
+    scheduleReminders()
+    const intervalId = window.setInterval(scheduleReminders, 60000)
+
+    return () => {
+      cancelled = true
+      window.clearInterval(intervalId)
+      timers.forEach((timerId) => window.clearTimeout(timerId))
+    }
+  }, [isAuthenticated])
 
   async function handleLogout() {
     await logout()
@@ -47,7 +123,7 @@ function App() {
     if (authPage === 'register') {
       return (
         <RegisterPage
-           onLogin={() => setAuthPage('login')}
+          onLogin={() => setAuthPage('login')}
         />
       )
     }
@@ -63,7 +139,7 @@ function App() {
   if (appPage === 'calendar') {
     return (
       <CalendarPage
-         onBack={() => setAppPage('home')}
+        onBack={() => setAppPage('home')}
       />
     )
   }
@@ -71,7 +147,7 @@ function App() {
   if (appPage === 'profile') {
     return (
       <ProfilePage
-      onBack={() => setAppPage('home')}
+        onBack={() => setAppPage('home')}
       />
     )
   }

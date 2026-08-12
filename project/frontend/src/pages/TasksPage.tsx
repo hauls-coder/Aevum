@@ -47,6 +47,8 @@ function TasksPage({
   const [startTime, setStartTime] = useState('')
   const [endTime, setEndTime] = useState('')
   const [isRecurring, setIsRecurring] = useState(false)
+  const [reminderOption, setReminderOption] = useState('')
+  const [customReminderMinutes, setCustomReminderMinutes] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isCreating, setIsCreating] = useState(false)
   const [error, setError] = useState('')
@@ -87,6 +89,15 @@ function TasksPage({
       return
     }
 
+    const reminderMinutesBefore =
+      reminderOption === 'custom'
+        ? customReminderMinutes
+          ? Number(customReminderMinutes)
+          : null
+        : reminderOption
+          ? Number(reminderOption)
+          : null
+
     try {
       setIsCreating(true)
       setError('')
@@ -97,6 +108,7 @@ function TasksPage({
         startsAt,
         endsAt,
         isRecurring,
+        reminderMinutesBefore,
       )
 
       const updatedTasks = await getTasks()
@@ -106,6 +118,8 @@ function TasksPage({
       setStartTime('')
       setEndTime('')
       setIsRecurring(false)
+      setReminderOption('')
+      setCustomReminderMinutes('')
     } catch {
       setError('Не удалось создать задачу')
     } finally {
@@ -286,12 +300,16 @@ function TasksPage({
         startTime={startTime}
         endTime={endTime}
         isRecurring={isRecurring}
+        reminderOption={reminderOption}
+        customReminderMinutes={customReminderMinutes}
         isCreating={isCreating}
         onTitleChange={setTitle}
         onDescriptionChange={setDescription}
         onStartTimeChange={setStartTime}
         onEndTimeChange={setEndTime}
         onIsRecurringChange={setIsRecurring}
+        onReminderOptionChange={setReminderOption}
+        onCustomReminderMinutesChange={setCustomReminderMinutes}
         onSubmit={handleSubmit}
       />
 
