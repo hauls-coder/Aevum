@@ -13,7 +13,6 @@ import type {
 } from '../types/calendarEvent'
 import type { Task } from '../types/task'
 
-
 interface CalendarPageProps {
     onBack: () => void
 }
@@ -42,6 +41,18 @@ function formatTime(iso: string): string {
         hour: '2-digit',
         minute: '2-digit',
     })
+}
+
+// Находит понедельник недели, в которую входит дата
+function getWeekStart(date: Date): Date {
+    const result = new Date(date)
+    const day = result.getDay()
+    const diff = day === 0 ? -6 : 1 - day
+
+    result.setDate(result.getDate() + diff)
+    result.setHours(0, 0, 0, 0)
+
+    return result
 }
 
 function CalendarPage({ onBack }: CalendarPageProps) {
@@ -85,6 +96,24 @@ function CalendarPage({ onBack }: CalendarPageProps) {
     }
 
     const isToday = isSameDay(selectedDate, new Date())
+
+    const weekStart = getWeekStart(selectedDate)
+    const weekDays = Array.from({ length: 7 }, (_, index) => {
+        const day = new Date(weekStart)
+        day.setDate(day.getDate() + index)
+        return day
+    })
+
+    function hasItemsOnDay(date: Date): boolean {
+        const hasEvent = events.some((event) =>
+            isSameDay(new Date(event.startsAt), date),
+        )
+        const hasTask =
+            isSameDay(date, new Date()) &&
+            tasks.some((task) => task.startsAt)
+
+        return hasEvent || hasTask
+    }
 
     const dayEvents = events.filter((event) =>
         isSameDay(new Date(event.startsAt), selectedDate),
@@ -182,31 +211,61 @@ function CalendarPage({ onBack }: CalendarPageProps) {
 
             {!isLoading && (
                 <>
-                    <div className="calendar-day-nav">
+                    <div className="calendar-week-nav">
                         <button
                             type="button"
-                            onClick={() => shiftDay(-1)}
+                            onClick={() => shiftDay(-7)}
                         >
-                            ←
+                            ‹
                         </button>
 
-                        <div className="calendar-day-label">
-                            {selectedDate.toLocaleDateString(
-                                'ru-RU',
-                                {
-                                    weekday: 'long',
-                                    day: 'numeric',
-                                    month: 'long',
-                                },
-                            )}
+                        <div className="calendar-week-strip">
+                            {weekDays.map((day) => (
+                                <button
+                                    key={day.toISOString()}
+                                    type="button"
+                                    className={
+                                        isSameDay(day, selectedDate)
+                                            ? 'calendar-week-day calendar-week-day--selected'
+                                            : 'calendar-week-day'
+                                    }
+                                    onClick={() =>
+                                        setSelectedDate(day)
+                                    }
+                                >
+                                    <span className="calendar-week-day-label">
+                                        {day.toLocaleDateString(
+                                            'ru-RU',
+                                            { weekday: 'short' },
+                                        )}
+                                    </span>
+                                    <span className="calendar-week-day-number">
+                                        {day.getDate()}
+                                    </span>
+                                    {hasItemsOnDay(day) && (
+                                        <span className="calendar-week-day-dot" />
+                                    )}
+                                </button>
+                            ))}
                         </div>
 
                         <button
                             type="button"
-                            onClick={() => shiftDay(1)}
+                            onClick={() => shiftDay(7)}
                         >
-                            →
+                            ›
                         </button>
+                    </div>
+
+                    <div className="calendar-day-label--full">
+                        {selectedDate.toLocaleDateString(
+                            'ru-RU',
+                            {
+                                weekday: 'long',
+                                day: 'numeric',
+                                month: 'long',
+                            },
+                        )}
                     </div>
 
                     {!isToday && (
