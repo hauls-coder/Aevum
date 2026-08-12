@@ -55,12 +55,37 @@ function getWeekStart(date: Date): Date {
     return result
 }
 
+// Строит сетку дней месяца (полными неделями, с хвостами соседних месяцев)
+function getMonthGridDays(date: Date): Date[] {
+    const year = date.getFullYear()
+    const month = date.getMonth()
+    const firstOfMonth = new Date(year, month, 1)
+    const lastOfMonth = new Date(year, month + 1, 0)
+
+    const gridStart = getWeekStart(firstOfMonth)
+    const gridEnd = getWeekStart(lastOfMonth)
+    gridEnd.setDate(gridEnd.getDate() + 6)
+
+    const days: Date[] = []
+    const cursor = new Date(gridStart)
+
+    while (cursor <= gridEnd) {
+        days.push(new Date(cursor))
+        cursor.setDate(cursor.getDate() + 1)
+    }
+
+    return days
+}
+
 function CalendarPage({ onBack }: CalendarPageProps) {
     const [events, setEvents] =
         useState<CalendarEvent[]>([])
     const [tasks, setTasks] = useState<Task[]>([])
     const [selectedDate, setSelectedDate] = useState(
         () => new Date(),
+    )
+    const [viewMode, setViewMode] = useState<'week' | 'month'>(
+        'week',
     )
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState('')
@@ -95,6 +120,17 @@ function CalendarPage({ onBack }: CalendarPageProps) {
         })
     }
 
+    function shiftMonth(months: number) {
+        setSelectedDate(
+            (current) =>
+                new Date(
+                    current.getFullYear(),
+                    current.getMonth() + months,
+                    1,
+                ),
+        )
+    }
+
     const isToday = isSameDay(selectedDate, new Date())
 
     const weekStart = getWeekStart(selectedDate)
@@ -103,6 +139,8 @@ function CalendarPage({ onBack }: CalendarPageProps) {
         day.setDate(day.getDate() + index)
         return day
     })
+
+    const monthDays = getMonthGridDays(selectedDate)
 
     function hasItemsOnDay(date: Date): boolean {
         const hasEvent = events.some((event) =>
@@ -211,51 +249,144 @@ function CalendarPage({ onBack }: CalendarPageProps) {
 
             {!isLoading && (
                 <>
-                    <div className="calendar-week-nav">
+                    <div className="calendar-view-toggle">
                         <button
                             type="button"
-                            onClick={() => shiftDay(-7)}
+                            className={
+                                viewMode === 'week'
+                                    ? 'calendar-view-toggle-button calendar-view-toggle-button--active'
+                                    : 'calendar-view-toggle-button'
+                            }
+                            onClick={() => setViewMode('week')}
                         >
-                            ‹
+                            Неделя
                         </button>
-
-                        <div className="calendar-week-strip">
-                            {weekDays.map((day) => (
-                                <button
-                                    key={day.toISOString()}
-                                    type="button"
-                                    className={
-                                        isSameDay(day, selectedDate)
-                                            ? 'calendar-week-day calendar-week-day--selected'
-                                            : 'calendar-week-day'
-                                    }
-                                    onClick={() =>
-                                        setSelectedDate(day)
-                                    }
-                                >
-                                    <span className="calendar-week-day-label">
-                                        {day.toLocaleDateString(
-                                            'ru-RU',
-                                            { weekday: 'short' },
-                                        )}
-                                    </span>
-                                    <span className="calendar-week-day-number">
-                                        {day.getDate()}
-                                    </span>
-                                    {hasItemsOnDay(day) && (
-                                        <span className="calendar-week-day-dot" />
-                                    )}
-                                </button>
-                            ))}
-                        </div>
-
                         <button
                             type="button"
-                            onClick={() => shiftDay(7)}
+                            className={
+                                viewMode === 'month'
+                                    ? 'calendar-view-toggle-button calendar-view-toggle-button--active'
+                                    : 'calendar-view-toggle-button'
+                            }
+                            onClick={() => setViewMode('month')}
                         >
-                            ›
+                            Месяц
                         </button>
                     </div>
+
+                    {viewMode === 'week' ? (
+                        <div className="calendar-week-nav">
+                            <button
+                                type="button"
+                                onClick={() => shiftDay(-7)}
+                            >
+                                ‹
+                            </button>
+
+                            <div className="calendar-week-strip">
+                                {weekDays.map((day) => (
+                                    <button
+                                        key={day.toISOString()}
+                                        type="button"
+                                        className={
+                                            isSameDay(day, selectedDate)
+                                                ? 'calendar-week-day calendar-week-day--selected'
+                                                : 'calendar-week-day'
+                                        }
+                                        onClick={() =>
+                                            setSelectedDate(day)
+                                        }
+                                    >
+                                        <span className="calendar-week-day-label">
+                                            {day.toLocaleDateString(
+                                                'ru-RU',
+                                                { weekday: 'short' },
+                                            )}
+                                        </span>
+                                        <span className="calendar-week-day-number">
+                                            {day.getDate()}
+                                        </span>
+                                        {hasItemsOnDay(day) && (
+                                            <span className="calendar-week-day-dot" />
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() => shiftDay(7)}
+                            >
+                                ›
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="calendar-month">
+                            <div className="calendar-month-nav">
+                                <button
+                                    type="button"
+                                    onClick={() => shiftMonth(-1)}
+                                >
+                                    ‹
+                                </button>
+                                <div className="calendar-month-label">
+                                    {selectedDate.toLocaleDateString(
+                                        'ru-RU',
+                                        { month: 'long', year: 'numeric' },
+                                    )}
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => shiftMonth(1)}
+                                >
+                                    ›
+                                </button>
+                            </div>
+
+                            <div className="calendar-month-weekdays">
+                                {['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].map(
+                                    (label) => (
+                                        <span key={label}>{label}</span>
+                                    ),
+                                )}
+                            </div>
+
+                            <div className="calendar-month-grid">
+                                {monthDays.map((day) => {
+                                    const inMonth =
+                                        day.getMonth() ===
+                                        selectedDate.getMonth()
+                                    const classNames = [
+                                        'calendar-month-day',
+                                        !inMonth &&
+                                            'calendar-month-day--muted',
+                                        isSameDay(day, new Date()) &&
+                                            'calendar-month-day--today',
+                                        isSameDay(day, selectedDate) &&
+                                            'calendar-month-day--selected',
+                                    ]
+                                        .filter(Boolean)
+                                        .join(' ')
+
+                                    return (
+                                        <button
+                                            key={day.toISOString()}
+                                            type="button"
+                                            className={classNames}
+                                            onClick={() =>
+                                                setSelectedDate(day)
+                                            }
+                                        >
+                                            <span>{day.getDate()}</span>
+                                            {hasItemsOnDay(day) && (
+                                                <span className="calendar-month-day-dot" />
+                                            )}
+                                        </button>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    )}
 
                     <div className="calendar-day-label--full">
                         {selectedDate.toLocaleDateString(
