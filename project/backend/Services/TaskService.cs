@@ -63,15 +63,40 @@ public class TaskService
             return "Задача не найдена!";
         }
 
+        var wasCompleted = task.IsCompleted;
+
         task.Title = updatedTask.Title.Trim();
         task.Description = NormalizeDescription(updatedTask.Description);
         task.StartsAt = updatedTask.StartsAt;
         task.EndsAt = updatedTask.EndsAt;
         task.IsCompleted = updatedTask.IsCompleted;
+        task.IsRecurring = updatedTask.IsRecurring;
+
+        // Если повторяющуюся задачу только что завершили — создаём копию на завтра
+        if (!wasCompleted && task.IsCompleted && task.IsRecurring)
+        {
+            CreateNextOccurrence(task, userId);
+        }
 
         context.SaveChanges();
 
         return "Задача успешно обновлена!";
+    }
+
+    private void CreateNextOccurrence(TaskItem completedTask, string userId)
+    {
+        var nextTask = new TaskItem
+        {
+            Title = completedTask.Title,
+            Description = completedTask.Description,
+            StartsAt = completedTask.StartsAt?.AddDays(1),
+            EndsAt = completedTask.EndsAt?.AddDays(1),
+            IsRecurring = true,
+            IsCompleted = false,
+            UserId = userId,
+        };
+
+        context.Tasks.Add(nextTask);
     }
 
     public string SetFocus(int id, string userId)

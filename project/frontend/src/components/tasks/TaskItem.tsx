@@ -235,6 +235,10 @@ function TaskItem({
 
           {timeLabel && <span className="task-time">{timeLabel}</span>}
 
+          {task.isRecurring && (
+            <span className="task-recurring-badge">Повторяется</span>
+          )}
+
           {task.description && (
             <small className="task-description">{task.description}</small>
           )}

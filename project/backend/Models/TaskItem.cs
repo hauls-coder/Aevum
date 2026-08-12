@@ -22,6 +22,9 @@ public class TaskItem
     // Подзадачи этой задачи
     public List<SubTask> SubTasks { get; set; } = new();
 
+    // Повторяется ли задача каждый день
+    public bool IsRecurring { get; set; }
+
     public string? UserId { get; set; }
 
     [JsonIgnore]

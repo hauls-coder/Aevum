@@ -12,5 +12,6 @@ export interface Task {
   endsAt: string | null
   isCompleted: boolean
   isFocus: boolean
+  isRecurring: boolean
   subTasks: SubTask[]
 }

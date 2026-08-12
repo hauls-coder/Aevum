@@ -5,11 +5,13 @@ interface TaskFormProps {
   description: string
   startTime: string
   endTime: string
+  isRecurring: boolean
   isCreating: boolean
   onTitleChange: (title: string) => void
   onDescriptionChange: (description: string) => void
   onStartTimeChange: (time: string) => void
   onEndTimeChange: (time: string) => void
+  onIsRecurringChange: (isRecurring: boolean) => void
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
 }
 
@@ -18,11 +20,13 @@ function TaskForm({
   description,
   startTime,
   endTime,
+  isRecurring,
   isCreating,
   onTitleChange,
   onDescriptionChange,
   onStartTimeChange,
   onEndTimeChange,
+  onIsRecurringChange,
   onSubmit,
 }: TaskFormProps) {
   return (
@@ -60,6 +64,15 @@ function TaskForm({
           />
         </label>
       </div>
+
+      <label className="task-form-recurring">
+        <input
+          type="checkbox"
+          checked={isRecurring}
+          onChange={(event) => onIsRecurringChange(event.target.checked)}
+        />
+        Повторять каждый день
+      </label>
 
       <button type="submit" disabled={isCreating}>
         {isCreating ? 'Создание...' : 'Добавить'}

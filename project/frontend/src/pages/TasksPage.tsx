@@ -46,6 +46,7 @@ function TasksPage({
   const [description, setDescription] = useState('')
   const [startTime, setStartTime] = useState('')
   const [endTime, setEndTime] = useState('')
+  const [isRecurring, setIsRecurring] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [isCreating, setIsCreating] = useState(false)
   const [error, setError] = useState('')
@@ -95,6 +96,7 @@ function TasksPage({
         description.trim(),
         startsAt,
         endsAt,
+        isRecurring,
       )
 
       const updatedTasks = await getTasks()
@@ -103,6 +105,7 @@ function TasksPage({
       setDescription('')
       setStartTime('')
       setEndTime('')
+      setIsRecurring(false)
     } catch {
       setError('Не удалось создать задачу')
     } finally {
@@ -119,11 +122,8 @@ function TasksPage({
       setError('')
       await updateTask(updatedTask)
 
-      setTasks((currentTasks) =>
-        currentTasks.map((currentTask) =>
-          currentTask.id === task.id ? updatedTask : currentTask,
-        ),
-      )
+      const updatedTasks = await getTasks()
+      setTasks(updatedTasks)
     } catch {
       setError('Не удалось изменить задачу')
     }
@@ -285,11 +285,13 @@ function TasksPage({
         description={description}
         startTime={startTime}
         endTime={endTime}
+        isRecurring={isRecurring}
         isCreating={isCreating}
         onTitleChange={setTitle}
         onDescriptionChange={setDescription}
         onStartTimeChange={setStartTime}
         onEndTimeChange={setEndTime}
+        onIsRecurringChange={setIsRecurring}
         onSubmit={handleSubmit}
       />
 
