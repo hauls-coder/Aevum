@@ -40,6 +40,33 @@ function formatCountdown(ms: number): string {
   return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
 }
 
+// Достаёт ЧЧ:ММ из ISO-строки для поля <input type="time">
+function toTimeInputValue(iso: string | null): string {
+  if (!iso) {
+    return ''
+  }
+
+  const date = new Date(iso)
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+
+  return `${hours}:${minutes}`
+}
+
+// Берёт дату из существующего времени задачи (или сегодня) и подставляет новое ЧЧ:ММ
+function combineWithTime(baseIso: string | null, time: string): string | null {
+  if (!time) {
+    return null
+  }
+
+  const [hours, minutes] = time.split(':').map(Number)
+  const date = baseIso ? new Date(baseIso) : new Date()
+
+  date.setHours(hours, minutes, 0, 0)
+
+  return date.toISOString()
+}
+
 function HomePage({
   onLogout,
   onProfile,
@@ -51,6 +78,12 @@ function HomePage({
   const [error, setError] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [now, setNow] = useState(() => new Date())
+  const [isAdjustingProgress, setIsAdjustingProgress] = useState(false)
+  const [progressDraft, setProgressDraft] = useState(0)
+  const [isEditingTime, setIsEditingTime] = useState(false)
+  const [editStartTime, setEditStartTime] = useState('')
+  const [editEndTime, setEditEndTime] = useState('')
+  const [editTimeError, setEditTimeError] = useState('')
 
   const focusTask = tasks.find((task) => task.isFocus)
 
@@ -127,6 +160,47 @@ function HomePage({
     }
   }
 
+  function toggleProgressEditor(task: Task) {
+    setProgressDraft(task.progressPercent)
+    setIsAdjustingProgress((current) => !current)
+  }
+
+  async function handleCommitProgress(task: Task, percent: number) {
+    try {
+      setError('')
+      await updateTask({ ...task, progressPercent: percent })
+      await loadTasks()
+    } catch {
+      setError('Не удалось обновить прогресс')
+    }
+  }
+
+  function openTimeEditor(task: Task) {
+    setEditStartTime(toTimeInputValue(task.startsAt))
+    setEditEndTime(toTimeInputValue(task.endsAt))
+    setEditTimeError('')
+    setIsEditingTime(true)
+  }
+
+  async function handleSaveTime(task: Task) {
+    const startsAt = combineWithTime(task.startsAt, editStartTime)
+    const endsAt = combineWithTime(task.startsAt, editEndTime)
+
+    if (startsAt && endsAt && new Date(endsAt) <= new Date(startsAt)) {
+      setEditTimeError('Время окончания должно быть позже времени начала')
+      return
+    }
+
+    try {
+      setError('')
+      await updateTask({ ...task, startsAt, endsAt })
+      setIsEditingTime(false)
+      await loadTasks()
+    } catch {
+      setError('Не удалось перенести время')
+    }
+  }
+
   if (isLoading) {
     return (
       <main className="app">
@@ -160,50 +234,212 @@ function HomePage({
       </header>
 
       <section className="focus-panel">
-        <h2 className="focus-panel-heading">Фокус дня</h2>
+        <div className="focus-panel-header">
+          <div className="focus-panel-title">
+            <svg
+              className="focus-icon"
+              viewBox="0 0 40 40"
+              width="40"
+              height="40"
+              aria-hidden="true"
+            >
+              <defs>
+                <radialGradient id="focus-glow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="var(--hot)" stopOpacity="0.85" />
+                  <stop offset="45%" stopColor="var(--gold)" stopOpacity="0.3" />
+                  <stop offset="100%" stopColor="var(--gold)" stopOpacity="0" />
+                </radialGradient>
+              </defs>
+
+              <circle cx="20" cy="20" r="5" fill="url(#focus-glow)" />
+
+              <g className="focus-icon-outer">
+                <circle
+                  cx="20"
+                  cy="20"
+                  r="20"
+                  fill="none"
+                  stroke="var(--gold)"
+                  strokeWidth="1"
+                  opacity="0.35"
+                />
+                <circle cx="20" cy="40" r="1.6" fill="var(--gold)" />
+              </g>
+
+              <g className="focus-icon-middle">
+                <circle
+                  cx="20"
+                  cy="20"
+                  r="14"
+                  fill="none"
+                  stroke="var(--gold-light)"
+                  strokeWidth="1"
+                  opacity="0.45"
+                />
+                <circle cx="20" cy="34" r="1.6" fill="var(--gold-light)" />
+              </g>
+
+              <g className="focus-icon-inner">
+                <circle
+                  cx="20"
+                  cy="20"
+                  r="8"
+                  fill="none"
+                  stroke="var(--gold)"
+                  strokeWidth="1"
+                  opacity="0.55"
+                />
+                <circle cx="20" cy="28" r="1.6" fill="var(--gold)" />
+              </g>
+
+              <circle cx="20" cy="20" r="3.5" fill="var(--hot)" />
+            </svg>
+
+            <h2 className="focus-panel-heading">Фокус дня</h2>
+          </div>
+
+          {focusTask && (
+            <button
+              type="button"
+              className="focus-edit-button"
+              onClick={() => openTimeEditor(focusTask)}
+              aria-label="Изменить время"
+            >
+              ✎
+            </button>
+          )}
+        </div>
 
         {focusTask ? (
           <div className="focus-card">
             <div className="focus-card-title">{focusTask.title}</div>
 
-            {focusTask.startsAt && (
-              <div className="focus-card-time">
-                Начало {formatTime(focusTask.startsAt)}
-              </div>
-            )}
+            {isEditingTime ? (
+              <div className="focus-time-editor">
+                <div className="task-form-time-row">
+                  <label>
+                    Начало
+                    <input
+                      type="time"
+                      value={editStartTime}
+                      onChange={(event) => setEditStartTime(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    Окончание
+                    <input
+                      type="time"
+                      value={editEndTime}
+                      onChange={(event) => setEditEndTime(event.target.value)}
+                    />
+                  </label>
+                </div>
 
-            {focusTask.endsAt && (
-              <div
-                className={
-                  isTimeUp
-                    ? 'focus-card-timer focus-card-timer--done'
-                    : 'focus-card-timer'
-                }
-              >
-                {isTimeUp ? 'Время вышло' : formatCountdown(remainingMs ?? 0)}
-              </div>
-            )}
+                {editTimeError && (
+                  <p className="edit-time-error">{editTimeError}</p>
+                )}
 
-            <div className="focus-card-actions">
-              <button
-                type="button"
-                className={
-                  isTimeUp
-                    ? 'focus-complete-button focus-complete-button--pulse'
-                    : 'focus-complete-button'
-                }
-                onClick={() => handleCompleteFocus(focusTask)}
-              >
-                Выполнена
-              </button>
-              <button
-                type="button"
-                className="focus-card-remove"
-                onClick={() => handleClearFocus(focusTask.id)}
-              >
-                Убрать из фокуса
-              </button>
-            </div>
+                <div className="focus-time-editor-actions">
+                  <button
+                    type="button"
+                    className="focus-complete-button"
+                    onClick={() => handleSaveTime(focusTask)}
+                  >
+                    Сохранить
+                  </button>
+                  <button
+                    type="button"
+                    className="focus-card-remove"
+                    onClick={() => setIsEditingTime(false)}
+                  >
+                    Отмена
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                {focusTask.startsAt && (
+                  <div className="focus-card-time">
+                    Начало {formatTime(focusTask.startsAt)}
+                  </div>
+                )}
+
+                {focusTask.endsAt && (
+                  <div
+                    className={
+                      isTimeUp
+                        ? 'focus-card-timer focus-card-timer--done'
+                        : 'focus-card-timer'
+                    }
+                  >
+                    {isTimeUp ? 'Время вышло' : formatCountdown(remainingMs ?? 0)}
+                  </div>
+                )}
+
+                {focusTask.progressPercent > 0 && (
+                  <div className="focus-progress-summary">
+                    <div className="focus-progress-bar">
+                      <span style={{ width: `${focusTask.progressPercent}%` }} />
+                    </div>
+                    <span className="focus-progress-label">
+                      {focusTask.progressPercent}%
+                    </span>
+                  </div>
+                )}
+
+                <div className="focus-card-actions">
+                  <button
+                    type="button"
+                    className={
+                      isTimeUp
+                        ? 'focus-complete-button focus-complete-button--pulse'
+                        : 'focus-complete-button'
+                    }
+                    onClick={() => handleCompleteFocus(focusTask)}
+                  >
+                    Выполнена
+                  </button>
+                  <button
+                    type="button"
+                    className="focus-card-remove"
+                    onClick={() => toggleProgressEditor(focusTask)}
+                  >
+                    В процессе
+                  </button>
+                </div>
+
+                {isAdjustingProgress && (
+                  <div className="focus-progress-editor">
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={progressDraft}
+                      onChange={(event) =>
+                        setProgressDraft(Number(event.target.value))
+                      }
+                      onMouseUp={() =>
+                        handleCommitProgress(focusTask, progressDraft)
+                      }
+                      onTouchEnd={() =>
+                        handleCommitProgress(focusTask, progressDraft)
+                      }
+                    />
+                    <span className="focus-progress-editor-value">
+                      {progressDraft}%
+                    </span>
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  className="focus-card-remove focus-card-remove--link"
+                  onClick={() => handleClearFocus(focusTask.id)}
+                >
+                  Убрать из фокуса
+                </button>
+              </>
+            )}
           </div>
         ) : (
           <div className="focus-empty">

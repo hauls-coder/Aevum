@@ -28,6 +28,9 @@ public class TaskItem
     // За сколько минут до начала напомнить (null — без напоминания)
     public int? ReminderMinutesBefore { get; set; }
 
+     // Процент выполнения для состояния "В процессе" (0-100)
+    public int ProgressPercent { get; set; }
+
     public string? UserId { get; set; }
 
     [JsonIgnore]

@@ -14,5 +14,6 @@ export interface Task {
   isFocus: boolean
   isRecurring: boolean
   reminderMinutesBefore: number | null
+  progressPercent: number
   subTasks: SubTask[]
 }

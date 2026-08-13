@@ -72,6 +72,8 @@ public class TaskService
         task.IsCompleted = updatedTask.IsCompleted;
         task.IsRecurring = updatedTask.IsRecurring;
         task.ReminderMinutesBefore = updatedTask.ReminderMinutesBefore;
+        task.ProgressPercent = updatedTask.ProgressPercent;
+
 
 
         // Если повторяющуюся задачу только что завершили — создаём копию на завтра

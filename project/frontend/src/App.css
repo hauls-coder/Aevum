@@ -423,12 +423,76 @@
   background: linear-gradient(135deg, var(--surface-1), var(--surface-2));
 }
 
+.focus-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.focus-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .focus-panel-heading {
-  margin: 0 0 14px;
+  margin: 0;
   font-size: 13px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--gold);
+}
+
+.focus-edit-button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+/* Фирменный анимированный символ фокуса — светящийся центр и кольца-орбиты */
+.focus-icon {
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.focus-icon-outer,
+.focus-icon-middle,
+.focus-icon-inner {
+  transform-box: view-box;
+  transform-origin: center;
+}
+
+.focus-icon-outer {
+  animation: focus-icon-spin-reverse 24s linear infinite;
+}
+
+.focus-icon-middle {
+  animation: focus-icon-spin 8s linear infinite;
+}
+
+.focus-icon-inner {
+  animation: focus-icon-spin-reverse 12s linear infinite;
+}
+
+@keyframes focus-icon-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes focus-icon-spin-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .focus-icon-outer,
+  .focus-icon-middle,
+  .focus-icon-inner {
+    animation: none;
+  }
 }
 
 .focus-card-title {
@@ -445,7 +509,79 @@
 }
 
 .focus-card-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Перенос времени фокуса */
+.focus-time-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.focus-time-editor-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Прогресс "В процессе" */
+.focus-progress-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.focus-progress-bar {
+  flex: 1;
+  height: 6px;
+  border-radius: 4px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.focus-progress-bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--bronze), var(--gold));
+}
+
+.focus-progress-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.focus-progress-editor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.focus-progress-editor input[type='range'] {
+  flex: 1;
+  accent-color: var(--gold);
+}
+
+.focus-progress-editor-value {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  width: 40px;
+  text-align: right;
+}
+
+.focus-card-remove--link {
+  display: block;
+  margin-top: 10px;
+  border: none;
   background: transparent;
+  text-decoration: underline;
+  padding: 0;
+  font-size: 12.5px;
 }
 
 .focus-empty p {

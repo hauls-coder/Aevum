@@ -144,6 +144,18 @@ function TasksPage({
   }
 
   async function handleDelete(id: number) {
+    const task = tasks.find((currentTask) => currentTask.id === id)
+
+    if (task?.isFocus) {
+      const confirmed = window.confirm(
+        'Эта задача сейчас в фокусе дня. Удалить её и остановить фокус?',
+      )
+
+      if (!confirmed) {
+        return
+      }
+    }
+
     try {
       setError('')
       await deleteTask(id)
@@ -155,6 +167,7 @@ function TasksPage({
       setError('Не удалось удалить задачу')
     }
   }
+  
   async function handleEdit(updatedTask: Task) {
     try {
       setError('')
