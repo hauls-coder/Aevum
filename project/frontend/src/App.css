@@ -13,6 +13,9 @@
   --gold-dark: #af823b;
   --bronze: #8a5d28;
   --hot: #ffb700;
+  --danger: #e1aaa3;
+  --danger-border: #633a36;
+  --danger-bg: #211616;
 }
 
 .app {
@@ -106,6 +109,11 @@
   color: var(--text);
 }
 
+.app button:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
 .app form button {
   min-height: 52px;
   padding: 0 20px;
@@ -193,7 +201,7 @@
 .edit-time-error {
   grid-column: 1 / -1;
   margin: 0;
-  color: #e1aaa3;
+  color: var(--danger);
   font-size: 13px;
 }
 
@@ -305,9 +313,9 @@
 }
 
 .status-message--error {
-  border-color: #633a36;
-  background: #211616;
-  color: #e1aaa3;
+  border-color: var(--danger-border);
+  background: var(--danger-bg);
+  color: var(--danger);
 }
 
 .app .task-edit-form {
@@ -445,11 +453,18 @@
 }
 
 .focus-edit-button {
+  position: relative;
   width: 30px;
   height: 30px;
   padding: 0;
   border-radius: 8px;
   font-size: 13px;
+}
+
+.focus-edit-button::after {
+  content: '';
+  position: absolute;
+  inset: -7px;
 }
 
 /* Фирменный анимированный символ фокуса — светящийся центр и кольца-орбиты */
@@ -626,7 +641,7 @@
 }
 
 .focus-card-timer--done {
-  color: #e1aaa3;
+  color: var(--danger);
 }
 
 .focus-complete-button {
@@ -665,8 +680,8 @@
 }
 
 .calendar-day-nav button {
-  min-width: 40px;
-  min-height: 40px;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .calendar-day-label {
@@ -808,8 +823,15 @@
 }
 
 .subtask-delete {
+  position: relative;
   padding: 4px 8px;
   font-size: 12px;
+}
+
+.subtask-delete::after {
+  content: '';
+  position: absolute;
+  inset: -10px;
 }
 
 .subtask-add-form {
@@ -936,8 +958,8 @@
 }
 
 .calendar-month-nav button {
-  min-width: 36px;
-  min-height: 36px;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .calendar-month-label {
