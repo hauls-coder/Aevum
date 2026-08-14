@@ -33,10 +33,18 @@
 
 .app {
   width: 100%;
-  max-width: 560px;
+  max-width: 430px;
   min-height: 100vh;
   margin: 0 auto;
   padding: 56px 20px;
+}
+
+.app--compact {
+  padding-top: 10px;
+}
+
+.app--with-nav {
+  padding-bottom: 104px;
 }
 
 .app h1 {
@@ -436,9 +444,235 @@
   }
 }
 
+/* Верхняя панель главного экрана — марка бренда слева, колокольчик уведомлений справа */
+.home-topbar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.home-topbar .home-menu-button {
+  justify-self: start;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.home-menu-button svg {
+  width: 22px;
+  height: 22px;
+}
+
+.home-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-brand .brand-logo-icon {
+  width: 30px;
+  height: 30px;
+  overflow: visible;
+}
+
+.home-brand-label {
+  color: var(--gold);
+  font-family: Georgia, serif;
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: 4px;
+}
+
+.home-topbar .home-notification-button {
+  position: relative;
+  justify-self: end;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-input);
+}
+
+.home-notification-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.home-notification-dot {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--hot);
+  border: 1.5px solid var(--surface-1);
+}
+
+/* Приветствие — время суток + имя пользователя */
+.home-greeting {
+  margin-bottom: 19px;
+}
+
+.home-greeting .home-greeting-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--text);
+  font-family: Georgia, serif;
+  font-size: var(--text-display-lg);
+  font-weight: 500;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.home-greeting-heading svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--gold);
+}
+
+.home-tagline {
+  margin: 7px 0 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  line-height: 1.1;
+}
+
+/* Квадратные карточки «Задачи» и «Календарь» под фокусом дня */
+.home-stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.home-stats-row .stat-card {
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--surface-1), var(--surface-2));
+  color: inherit;
+  text-align: left;
+}
+
+.home-stats-row .stat-card:hover {
+  border-color: var(--gold);
+}
+
+.stat-card-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 8px;
+  height: 104px;
+  padding: 12px;
+}
+
+.stat-card-label {
+  font-family: Georgia, serif;
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.stat-card-body {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stat-card-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--gold);
+}
+
+.stat-card-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.stat-card-value {
+  display: block;
+  color: var(--text);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.stat-card-caption {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+/* Карточка цитаты с фоновой иллюстрацией */
+.quote-card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  min-height: 130px;
+  margin-bottom: 4px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.quote-card-art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.quote-card-art svg,
+.quote-card-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.quote-card-content {
+  position: relative;
+  z-index: 1;
+  max-width: 62%;
+}
+
+.quote-mark {
+  display: block;
+  margin-bottom: -6px;
+  color: var(--gold);
+  font-family: Georgia, serif;
+  font-size: var(--text-2xl);
+  line-height: 0.6;
+}
+
+.quote-text {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--text-xs);
+  line-height: 1.4;
+}
+
 .focus-panel {
-  margin-bottom: 28px;
-  padding: 20px;
+  margin-bottom: 8px;
+  padding: 12px;
   border: 1px solid var(--border);
   border-radius: 16px;
   background: linear-gradient(135deg, var(--surface-1), var(--surface-2));
@@ -448,7 +682,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 6px;
 }
 
 .focus-panel-title {
@@ -459,6 +693,7 @@
 
 .focus-panel-heading {
   margin: 0;
+  font-family: Georgia, serif;
   font-size: var(--text-sm);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -523,17 +758,87 @@
   }
 }
 
+/* Пульсация центра и волны фокуса — только когда задача выбрана */
+.focus-icon-center {
+  transform-box: view-box;
+  transform-origin: center;
+}
+
+.focus-icon-center--pulse {
+  animation: focus-icon-center-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes focus-icon-center-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.18);
+  }
+}
+
+.focus-icon-wave {
+  transform-box: view-box;
+  transform-origin: center;
+  animation: focus-icon-wave-ripple 4.8s ease-out infinite;
+}
+
+.focus-icon-wave--delayed {
+  animation-delay: 2.4s;
+}
+
+@keyframes focus-icon-wave-ripple {
+  0% {
+    r: 3.5;
+    stroke-width: 2.5;
+    opacity: 0.6;
+  }
+  60% {
+    stroke-width: 0.8;
+    opacity: 0.25;
+  }
+  100% {
+    r: 20;
+    stroke-width: 0.2;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .focus-icon-center--pulse,
+  .focus-icon-wave {
+    animation: none;
+  }
+}
+
+.focus-card-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+
+.focus-card-icon {
+  flex-shrink: 0;
+}
+
+.focus-card-content {
+  min-width: 0;
+  flex: 1;
+}
+
 .focus-card-title {
-  font-size: var(--text-2xl);
+  font-size: var(--text-lg);
   color: var(--text);
-  margin-bottom: 6px;
+  margin-bottom: 2px;
 }
 
 .focus-card-time {
   color: var(--text-muted);
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   font-variant-numeric: tabular-nums;
-  margin-bottom: 16px;
+  margin-bottom: 3px;
 }
 
 .focus-card-actions {
@@ -559,7 +864,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 5px;
 }
 
 .focus-progress-bar {
@@ -602,14 +907,15 @@
   text-align: right;
 }
 
-.focus-card-remove--link {
+.focus-card-remove-standalone {
   display: block;
-  margin-top: 10px;
-  border: none;
-  background: transparent;
-  text-decoration: underline;
-  padding: 0;
-  font-size: var(--text-xs);
+  margin-top: 8px;
+}
+
+.focus-card-icon--idle {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
 .focus-empty p {
@@ -636,32 +942,109 @@
   background: var(--surface-input);
 }
 
-.home-nav {
+/* Нижняя навигация — 5 пунктов, поднятая золотая кнопка добавления по центру */
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
   display: flex;
-  gap: 10px;
+  align-items: center;
+  justify-content: space-around;
+  max-width: 430px;
+  margin: 0 auto;
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  background: var(--surface-1);
+  border-top: 1px solid var(--border);
 }
 
-.home-nav button {
-  flex: 1;
-  min-height: 46px;
+.bottom-nav .bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 56px;
+  min-height: 48px;
+  padding: 4px 6px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text-faint);
+  font-size: var(--text-2xs);
+}
+
+.bottom-nav-item svg {
+  width: 22px;
+  height: 22px;
+}
+
+.bottom-nav-item span {
+  line-height: 1;
+}
+
+.bottom-nav .bottom-nav-item:hover {
+  color: var(--text-muted);
+}
+
+.bottom-nav .bottom-nav-item--active {
+  background: rgb(212 167 78 / 14%);
+  color: var(--gold);
+}
+
+.bottom-nav .bottom-nav-fab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin-top: -26px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--bronze));
+  box-shadow: 0 4px 14px rgb(212 167 78 / 40%);
+}
+
+.bottom-nav-fab svg {
+  width: 22px;
+  height: 22px;
 }
 
 .focus-card-timer {
-  font-size: var(--text-display-sm);
+  font-size: var(--text-2xl);
   font-variant-numeric: tabular-nums;
   color: var(--text);
-  margin-bottom: 16px;
+  margin-bottom: 4px;
 }
 
 .focus-card-timer--done {
-  color: var(--danger);
+  color: #ff6b4a;
+  font-weight: 500;
+  animation: focus-timer-glow 1.6s ease-in-out infinite;
+}
+
+@keyframes focus-timer-glow {
+  0%,
+  100% {
+    text-shadow: 0 0 0 rgb(255 107 74 / 0%);
+  }
+  50% {
+    text-shadow: 0 0 8px rgb(255 107 74 / 25%);
+  }
+}
+
+.focus-card-actions .focus-complete-button,
+.focus-card-actions .focus-card-remove,
+.focus-card-remove-standalone {
+  padding-left: 4px;
 }
 
 .focus-complete-button {
   border-color: var(--gold-dark);
   background: linear-gradient(135deg, var(--gold), var(--bronze));
   color: var(--bg);
-  font-weight: 700;
+  font-weight: 500;
 }
 
 @keyframes focus-pulse {
@@ -679,7 +1062,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .focus-complete-button--pulse {
+  .focus-complete-button--pulse,
+  .focus-card-timer--done {
     animation: none;
   }
 }
@@ -1071,8 +1455,11 @@
 }
 
 .task-recurring-badge::before {
-  content: "🔁";
-  font-size: var(--text-2xs);
+  content: '';
+  width: 12px;
+  height: 12px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M13 8A5 5 0 1 1 8 3' fill='none' stroke='%23aba396' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M8 1l3 2-3 2' fill='none' stroke='%23aba396' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    no-repeat center / contain;
 }
 
 .task-form-reminder {
@@ -1102,6 +1489,9 @@
 }
 
 .task-reminder-badge::before {
-  content: "🔔";
-  font-size: var(--text-2xs);
+  content: '';
+  width: 12px;
+  height: 12px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.5a1 1 0 0 0-1 1v.6C4.9 3.5 3.5 5.4 3.5 7.6v2.4L2.3 12a.6.6 0 0 0 .5.9h10.4a.6.6 0 0 0 .5-.9l-1.2-2V7.6c0-2.2-1.4-4.1-3.5-4.5v-.6a1 1 0 0 0-1-1z' fill='none' stroke='%23aba396' stroke-width='1.3' stroke-linejoin='round' stroke-linecap='round'/%3E%3Cpath d='M6.3 13.2a1.8 1.8 0 0 0 3.4 0' fill='none' stroke='%23aba396' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E")
+    no-repeat center / contain;
 }

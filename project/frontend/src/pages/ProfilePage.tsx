@@ -4,12 +4,15 @@ import {
     updateProfile,
     type Profile,
 } from '../api/profileApi'
+import BottomNav from '../components/nav/BottomNav'
 
 interface ProfilePageProps {
     onBack: () => void
+    onTasks: () => void
+    onCalendar: () => void
 }
 
-function ProfilePage({ onBack }: ProfilePageProps) {
+function ProfilePage({ onBack, onTasks, onCalendar }: ProfilePageProps) {
     const [profile, setProfile] =
         useState<Profile | null>(null)
     const [displayName, setDisplayName] = useState('')
@@ -56,15 +59,12 @@ function ProfilePage({ onBack }: ProfilePageProps) {
     }
 
     return (
-        <main className="app auth-page">
+        <main className="app auth-page app--with-nav">
             <header className="tasks-heading">
                 <div>
                     <span className="brand-label">AEVUM</span>
                     <h1>Профиль</h1>
                 </div>
-                <button type="button" onClick={onBack}>
-                    К задачам
-                </button>
             </header>
 
             {error && (
@@ -109,6 +109,15 @@ function ProfilePage({ onBack }: ProfilePageProps) {
                     )}
                 </div>
             )}
+
+            <BottomNav
+                active="profile"
+                onHome={onBack}
+                onTasks={onTasks}
+                onCalendar={onCalendar}
+                onProfile={() => {}}
+                onAdd={onTasks}
+            />
         </main>
     )
 }

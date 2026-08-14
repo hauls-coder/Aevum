@@ -12,9 +12,12 @@ import type {
     CalendarEvent,
 } from '../types/calendarEvent'
 import type { Task } from '../types/task'
+import BottomNav from '../components/nav/BottomNav'
 
 interface CalendarPageProps {
     onBack: () => void
+    onTasks: () => void
+    onProfile: () => void
 }
 
 interface DayItem {
@@ -77,7 +80,7 @@ function getMonthGridDays(date: Date): Date[] {
     return days
 }
 
-function CalendarPage({ onBack }: CalendarPageProps) {
+function CalendarPage({ onBack, onTasks, onProfile }: CalendarPageProps) {
     const [events, setEvents] =
         useState<CalendarEvent[]>([])
     const [tasks, setTasks] = useState<Task[]>([])
@@ -226,13 +229,9 @@ function CalendarPage({ onBack }: CalendarPageProps) {
     }
 
     return (
-        <main className="app">
+        <main className="app app--with-nav">
             <header className="tasks-heading">
                 <h1>Календарь</h1>
-
-                <button type="button" onClick={onBack}>
-                    Главная
-                </button>
             </header>
 
             {isLoading && (
@@ -487,6 +486,15 @@ function CalendarPage({ onBack }: CalendarPageProps) {
                     {isCreating ? 'Создание...' : 'Создать'}
                 </button>
             </form>
+
+            <BottomNav
+                active="calendar"
+                onHome={onBack}
+                onTasks={onTasks}
+                onCalendar={() => {}}
+                onProfile={onProfile}
+                onAdd={onTasks}
+            />
         </main>
     )
 }

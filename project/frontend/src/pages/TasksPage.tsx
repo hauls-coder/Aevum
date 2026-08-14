@@ -13,6 +13,7 @@ import {
 import type { SubTask, Task } from '../types/task'
 import '../App.css'
 import { getProfile } from '../api/profileApi'
+import BottomNav from '../components/nav/BottomNav'
 
 interface TasksPageProps {
   onLogout: () => void
@@ -256,7 +257,7 @@ function TasksPage({
   }
 
   return (
-    <main className="app">
+    <main className="app app--with-nav">
       <header className="tasks-header">
         <div className="tasks-topbar">
           <div className="brand-navigation">
@@ -289,20 +290,6 @@ function TasksPage({
             <p>
               {completedCount} из {tasks.length} выполнено
             </p>
-
-            <button
-              type="button"
-              onClick={onHome}
-            >
-              Главная
-            </button>
-
-            <button
-              type="button"
-              onClick={onCalendar}
-            >
-              Календарь
-            </button>
           </div>
         </div>
       </header>
@@ -341,6 +328,15 @@ function TasksPage({
         onAddSubTask={handleAddSubTask}
         onToggleSubTask={handleToggleSubTask}
         onDeleteSubTask={handleDeleteSubTask}
+      />
+
+      <BottomNav
+        active="tasks"
+        onHome={onHome}
+        onTasks={() => {}}
+        onCalendar={onCalendar}
+        onProfile={onProfile}
+        onAdd={() => {}}
       />
     </main>
   )

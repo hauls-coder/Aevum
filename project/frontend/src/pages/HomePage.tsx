@@ -8,12 +8,35 @@ import {
 import type { Task } from '../types/task'
 import '../App.css'
 import { getProfile } from '../api/profileApi'
+import BottomNav from '../components/nav/BottomNav'
+import FocusIcon from '../components/focus/FocusIcon'
+import quoteMountains from '../assets/quote-mountains.png'
 
 interface HomePageProps {
-  onLogout: () => void
   onProfile: () => void
   onCalendar: () => void
   onTasks: () => void
+}
+
+// Подбирает приветствие и значок (солнце/луна) под текущее время суток
+function getGreeting(date: Date): { text: string; icon: 'sun' | 'moon' } {
+  const hour = date.getHours()
+
+  if (hour >= 5 && hour < 12) {
+    return { text: 'Доброе утро', icon: 'sun' }
+  }
+  if (hour >= 12 && hour < 17) {
+    return { text: 'Добрый день', icon: 'sun' }
+  }
+  if (hour >= 17 && hour < 23) {
+    return { text: 'Добрый вечер', icon: 'moon' }
+  }
+  return { text: 'Доброй ночи', icon: 'moon' }
+}
+
+// Делает первую букву заглавной (для дня недели из toLocaleDateString)
+function capitalize(text: string): string {
+  return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
 // Форматирует время в вид ЧЧ:ММ
@@ -68,7 +91,6 @@ function combineWithTime(baseIso: string | null, time: string): string | null {
 }
 
 function HomePage({
-  onLogout,
   onProfile,
   onCalendar,
   onTasks,
@@ -78,6 +100,9 @@ function HomePage({
   const [error, setError] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [now, setNow] = useState(() => new Date())
+  const [notificationsGranted, setNotificationsGranted] = useState(
+    () => 'Notification' in window && Notification.permission === 'granted',
+  )
   const [isAdjustingProgress, setIsAdjustingProgress] = useState(false)
   const [progressDraft, setProgressDraft] = useState(0)
   const [isEditingTime, setIsEditingTime] = useState(false)
@@ -175,6 +200,15 @@ function HomePage({
     }
   }
 
+  async function handleNotificationClick() {
+    if (!('Notification' in window) || Notification.permission !== 'default') {
+      return
+    }
+
+    const permission = await Notification.requestPermission()
+    setNotificationsGranted(permission === 'granted')
+  }
+
   function openTimeEditor(task: Task) {
     setEditStartTime(toTimeInputValue(task.startsAt))
     setEditEndTime(toTimeInputValue(task.endsAt))
@@ -209,94 +243,152 @@ function HomePage({
     )
   }
 
+  const greeting = getGreeting(now)
+  const todayLabel = now.toLocaleDateString('ru-RU', {
+    day: 'numeric',
+    month: 'short',
+  })
+  const weekdayLabel = capitalize(
+    now.toLocaleDateString('ru-RU', { weekday: 'long' }),
+  )
+  const openTasksCount = tasks.filter((task) => !task.isCompleted).length
+
   return (
-    <main className="app">
-      <header className="tasks-header">
-        <div className="tasks-topbar">
-          <div className="brand-navigation">
-            <span className="brand-label">AEVUM</span>
+    <main className="app app--with-nav app--compact">
+      <header className="home-topbar">
+        <button
+          type="button"
+          className="home-menu-button"
+          aria-label="Меню"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M3 7h18M3 12h12M3 17h18"
+              stroke="var(--gold)"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
 
-            <button
-              type="button"
-              className="profile-button"
-              onClick={onProfile}
-            >
-              <span className="user-display-name">
-                Профиль: {displayName || 'Пользователь'}
-              </span>
-            </button>
-          </div>
+        <div className="home-brand">
+          <svg
+            className="brand-logo-icon"
+            viewBox="0 0 40 40"
+            aria-hidden="true"
+          >
+            <circle cx="20" cy="20" r="5" fill="url(#focus-glow)" />
 
-          <button type="button" className="logout-button" onClick={onLogout}>
-            Выйти
-          </button>
+            <path
+              d="M5.858,34.142 A20,20 0 1,1 20,40"
+              fill="none"
+              stroke="var(--gold)"
+              strokeWidth="1"
+              strokeLinecap="round"
+              opacity="0.35"
+            />
+            <circle cx="5.858" cy="34.142" r="1.6" fill="var(--gold)" />
+
+            <path
+              d="M10.1,29.9 A14,14 0 1,1 20,34"
+              fill="none"
+              stroke="var(--gold-light)"
+              strokeWidth="1"
+              strokeLinecap="round"
+              opacity="0.45"
+            />
+            <circle cx="10.1" cy="29.9" r="1.6" fill="var(--gold-light)" />
+
+            <path
+              d="M14.343,25.657 A8,8 0 1,1 20,28"
+              fill="none"
+              stroke="var(--gold)"
+              strokeWidth="1"
+              strokeLinecap="round"
+              opacity="0.55"
+            />
+            <circle cx="14.343" cy="25.657" r="1.6" fill="var(--gold)" />
+
+            <circle cx="20" cy="20" r="3.5" fill="var(--hot)" />
+          </svg>
+
+          <span className="home-brand-label">AEVUM</span>
         </div>
+
+        <button
+          type="button"
+          className="home-notification-button"
+          onClick={handleNotificationClick}
+          aria-label="Уведомления"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M6 10a6 6 0 1 1 12 0v4.2l1.6 2.6a1 1 0 0 1-.85 1.5H5.25a1 1 0 0 1-.85-1.5L6 14.2V10Z"
+              fill="none"
+              stroke="var(--gold-light)"
+              strokeWidth="1.6"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M9.5 20a2.5 2.5 0 0 0 5 0"
+              fill="none"
+              stroke="var(--gold-light)"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+            />
+          </svg>
+          {!notificationsGranted && (
+            <span className="home-notification-dot" aria-hidden="true" />
+          )}
+        </button>
       </header>
+
+      <svg width="0" height="0" aria-hidden="true">
+        <defs>
+          <radialGradient id="focus-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="var(--hot)" stopOpacity="0.85" />
+            <stop offset="45%" stopColor="var(--gold)" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="var(--gold)" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+      </svg>
+
+      <div className="home-greeting">
+        <h1 className="home-greeting-heading">
+          {greeting.text}, {displayName || 'Пользователь'}
+          {greeting.icon === 'sun' ? (
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle
+                cx="12"
+                cy="12"
+                r="4.5"
+                stroke="currentColor"
+                strokeWidth="1.7"
+              />
+              <path
+                d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+              />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinejoin="round"
+              />
+            </svg>
+          )}
+        </h1>
+        <p className="home-tagline">Каждый день — шаг к твоей лучшей жизни.</p>
+      </div>
 
       <section className="focus-panel">
         <div className="focus-panel-header">
-          <div className="focus-panel-title">
-            <svg
-              className="focus-icon"
-              viewBox="0 0 40 40"
-              width="40"
-              height="40"
-              aria-hidden="true"
-            >
-              <defs>
-                <radialGradient id="focus-glow" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stopColor="var(--hot)" stopOpacity="0.85" />
-                  <stop offset="45%" stopColor="var(--gold)" stopOpacity="0.3" />
-                  <stop offset="100%" stopColor="var(--gold)" stopOpacity="0" />
-                </radialGradient>
-              </defs>
-
-              <circle cx="20" cy="20" r="5" fill="url(#focus-glow)" />
-
-              <g className="focus-icon-outer">
-                <circle
-                  cx="20"
-                  cy="20"
-                  r="20"
-                  fill="none"
-                  stroke="var(--gold)"
-                  strokeWidth="1"
-                  opacity="0.35"
-                />
-                <circle cx="20" cy="40" r="1.6" fill="var(--gold)" />
-              </g>
-
-              <g className="focus-icon-middle">
-                <circle
-                  cx="20"
-                  cy="20"
-                  r="14"
-                  fill="none"
-                  stroke="var(--gold-light)"
-                  strokeWidth="1"
-                  opacity="0.45"
-                />
-                <circle cx="20" cy="34" r="1.6" fill="var(--gold-light)" />
-              </g>
-
-              <g className="focus-icon-inner">
-                <circle
-                  cx="20"
-                  cy="20"
-                  r="8"
-                  fill="none"
-                  stroke="var(--gold)"
-                  strokeWidth="1"
-                  opacity="0.55"
-                />
-                <circle cx="20" cy="28" r="1.6" fill="var(--gold)" />
-              </g>
-
-              <circle cx="20" cy="20" r="3.5" fill="var(--hot)" />
-            </svg>
-
-            <h2 className="focus-panel-heading">Фокус дня</h2>
-          </div>
+          <h2 className="focus-panel-heading">Фокус дня</h2>
 
           {focusTask && (
             <button
@@ -312,7 +404,13 @@ function HomePage({
 
         {focusTask ? (
           <div className="focus-card">
-            <div className="focus-card-title">{focusTask.title}</div>
+            <div className="focus-card-body">
+              <div className="focus-card-icon">
+                <FocusIcon active size={58} />
+              </div>
+
+              <div className="focus-card-content">
+                <div className="focus-card-title">{focusTask.title}</div>
 
             {isEditingTime ? (
               <div className="focus-time-editor">
@@ -433,16 +531,22 @@ function HomePage({
 
                 <button
                   type="button"
-                  className="focus-card-remove focus-card-remove--link"
+                  className="focus-card-remove focus-card-remove-standalone"
                   onClick={() => handleClearFocus(focusTask.id)}
                 >
                   Убрать из фокуса
                 </button>
               </>
             )}
+              </div>
+            </div>
           </div>
         ) : (
           <div className="focus-empty">
+            <div className="focus-card-icon focus-card-icon--idle">
+              <FocusIcon active={false} size={58} />
+            </div>
+
             <p>Выбери главную задачу на сегодня</p>
 
             {availableTasks.length === 0 ? (
@@ -465,18 +569,110 @@ function HomePage({
         )}
       </section>
 
+      <div className="home-stats-row">
+        <button
+          type="button"
+          className="stat-card"
+          onClick={onTasks}
+        >
+          <div className="stat-card-inner">
+            <span className="stat-card-label">Задачи</span>
+            <div className="stat-card-body">
+              <span className="stat-card-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect
+                    x="4"
+                    y="4"
+                    width="16"
+                    height="16"
+                    rx="4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                  />
+                  <path
+                    d="M8 10.5l2 2 3.5-4M8 16h6"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+              <span>
+                <span className="stat-card-value">{openTasksCount}</span>
+                <span className="stat-card-caption">на сегодня</span>
+              </span>
+            </div>
+          </div>
+        </button>
+
+        <button
+          type="button"
+          className="stat-card"
+          onClick={onCalendar}
+        >
+          <div className="stat-card-inner">
+            <span className="stat-card-label">Календарь</span>
+            <div className="stat-card-body">
+              <span className="stat-card-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect
+                    x="4"
+                    y="5"
+                    width="16"
+                    height="15"
+                    rx="3"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                  />
+                  <path
+                    d="M4 9.5h16M8 3v3.5M16 3v3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </span>
+              <span>
+                <span className="stat-card-value">{todayLabel}</span>
+                <span className="stat-card-caption">{weekdayLabel}</span>
+              </span>
+            </div>
+          </div>
+        </button>
+      </div>
+
+      <div className="quote-card">
+        <div className="quote-card-art">
+          <img src={quoteMountains} alt="" aria-hidden="true" />
+        </div>
+
+        <div className="quote-card-content">
+          <span className="quote-mark">"</span>
+          <p className="quote-text">
+            Будущее не случается само.
+            <br />
+            Его создают каждый день.
+          </p>
+        </div>
+      </div>
+
       {error && (
         <p className="status-message status-message--error">{error}</p>
       )}
 
-      <nav className="home-nav">
-        <button type="button" onClick={onTasks}>
-          Задачи
-        </button>
-        <button type="button" onClick={onCalendar}>
-          Календарь
-        </button>
-      </nav>
+      <BottomNav
+        active="home"
+        onHome={() => {}}
+        onTasks={onTasks}
+        onCalendar={onCalendar}
+        onProfile={onProfile}
+        onAdd={onTasks}
+      />
     </main>
   )
 }

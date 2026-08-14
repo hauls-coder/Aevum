@@ -9,15 +9,37 @@ import TasksPage from './pages/TasksPage'
 import './App.css'
 import CalendarPage from './pages/CalendarPage'
 
+type AppPage = 'home' | 'tasks' | 'profile' | 'calendar'
+
+const APP_PAGE_STORAGE_KEY = 'aevum-app-page'
+
+// Достаёт последнюю открытую страницу, чтобы обновление вкладки не сбрасывало на главную
+function readStoredAppPage(): AppPage {
+  const stored = localStorage.getItem(APP_PAGE_STORAGE_KEY)
+
+  if (
+    stored === 'home' ||
+    stored === 'tasks' ||
+    stored === 'profile' ||
+    stored === 'calendar'
+  ) {
+    return stored
+  }
+
+  return 'home'
+}
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] =
     useState<boolean | null>(null)
   const [authPage, setAuthPage] =
     useState<'login' | 'register'>('login')
   const [appPage, setAppPage] =
-    useState<
-      'home' | 'tasks' | 'profile' | 'calendar'
-    >('home')
+    useState<AppPage>(readStoredAppPage)
+
+  useEffect(() => {
+    localStorage.setItem(APP_PAGE_STORAGE_KEY, appPage)
+  }, [appPage])
 
   useEffect(() => {
     getCurrentUser()
@@ -140,6 +162,8 @@ function App() {
     return (
       <CalendarPage
         onBack={() => setAppPage('home')}
+        onTasks={() => setAppPage('tasks')}
+        onProfile={() => setAppPage('profile')}
       />
     )
   }
@@ -148,6 +172,8 @@ function App() {
     return (
       <ProfilePage
         onBack={() => setAppPage('home')}
+        onTasks={() => setAppPage('tasks')}
+        onCalendar={() => setAppPage('calendar')}
       />
     )
   }
@@ -165,7 +191,6 @@ function App() {
 
   return (
     <HomePage
-      onLogout={handleLogout}
       onProfile={() => setAppPage('profile')}
       onCalendar={() => setAppPage('calendar')}
       onTasks={() => setAppPage('tasks')}
